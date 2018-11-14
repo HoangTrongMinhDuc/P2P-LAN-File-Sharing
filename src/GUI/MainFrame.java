@@ -1,6 +1,8 @@
 package GUI;
 
 import Model.Computer;
+import Model.FileSeed;
+import Model.FileShare;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,9 +25,9 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     public MainFrame(){
-        initMainFrame();
         initLayout();
         setListener();
+        initMainFrame();
     }
 
     private void initMainFrame(){
@@ -86,7 +88,6 @@ public class MainFrame extends JFrame implements ActionListener {
             listComputer.setVisible(true);
 //            scrollPane.add(listComputer, 0);
             leftPanel.add(new JScrollPane(listComputer));
-            System.out.print(listComputer.isShowing()+"|"+models.size()+"|"+listComputer.getModel().getSize());
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -105,7 +106,47 @@ public class MainFrame extends JFrame implements ActionListener {
         this.add(leftPanel, BorderLayout.LINE_START);
 
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("All files", new JPanel());
+//        tabbedPane.addTab("Download", new JPanel());
+        JPanel allFilesPanel = new JPanel();
+        DefaultListModel<FileSeed> modelSeed = new DefaultListModel<>();
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hellretyryo.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.rtytreyplanet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hellwertwerterto.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Helloewtr.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Helretyeytrlo.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Helewrterlo.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hellshterhreho.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.plgesrtanet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "world", 1024, "C://", null, 4));
+
+        JList<FileSeed> listFileSeed = new JList<>(modelSeed);
+        listFileSeed.setCellRenderer(new FileList());
+        allFilesPanel.setLayout(new BorderLayout());
+        allFilesPanel.add(new JScrollPane(listFileSeed), BorderLayout.CENTER);
+        tabbedPane.addTab("All files",null,allFilesPanel, "All files");
         this.add(tabbedPane, BorderLayout.CENTER);
     }
 

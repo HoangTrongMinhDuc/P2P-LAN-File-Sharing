@@ -89,6 +89,11 @@ public class Computer {
 
     }
 
+    public boolean isSame(Computer computer){
+
+        return true;
+    }
+
     @Override
     public String toString() {
         return this.name;
