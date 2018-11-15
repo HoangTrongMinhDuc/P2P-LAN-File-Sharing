@@ -16,8 +16,7 @@ public class ComputerList extends JPanel implements ListCellRenderer<Computer> {
 //        this.setBackground(Color.WHITE);
         lbStatus = new JLabel();
         this.add(lbStatus);
-        System.out.println("C:\\Users\\HTML5\\IdeaProjects\\DoAnMang\\src\\res\\active.png");
-        lbStatus.setIcon(new ImageIcon("C:\\Users\\HTML5\\IdeaProjects\\DoAnMang\\src\\res\\active.png"));
+        lbStatus.setIcon(new ImageIcon("src/res/active.png"));
         this.add(Box.createHorizontalStrut(10));
         JPanel comPanel = new JPanel();
         comPanel.setLayout(new BoxLayout(comPanel, BoxLayout.Y_AXIS));

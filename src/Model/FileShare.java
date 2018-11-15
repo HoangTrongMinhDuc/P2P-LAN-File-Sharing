@@ -48,8 +48,8 @@ public class FileShare {
     }
 
     public String getExtension(){
-//        return this.name.split(".")[this.name.split(".").length-1];
-        return "file";
+        return this.name.split("\\.")[this.name.split("\\.").length-1];
+//        return "file";
     }
 
     public float getMegaSize(){

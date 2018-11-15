@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="org.pushing-pixels:radiance-neon:1.0.2" type="repository">
+    <properties maven-id="org.pushing-pixels:radiance-neon:1.0.2" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/radiance-neon-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
