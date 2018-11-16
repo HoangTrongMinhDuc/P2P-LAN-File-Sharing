@@ -25,24 +25,23 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton btnAddComputer;
     private JButton btnRefresh;
     private JButton btnSetting;
-    public static  void main(String args[]){
-//        try
-//        {
-//            UIManager.put("RootPane.setupButtonVisible", false);
-//            BeautyEyeLNFHelper.translucencyAtFrameInactive = true;
-//            BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.translucencySmallShadow;
-//            org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
-//        }
-//        catch(Exception e)
-//        {
-//            System.out.println(e.getMessage());
-//            //TODO exception
-//        }
-        new MainFrame();
-    }
+//    public static  void main(String args[]){
+////        try
+////        {
+////            UIManager.put("RootPane.setupButtonVisible", false);
+////            BeautyEyeLNFHelper.translucencyAtFrameInactive = true;
+////            BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.translucencySmallShadow;
+////            org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+////        }
+////        catch(Exception e)
+////        {
+////            System.out.println(e.getMessage());
+////            //TODO exception
+////        }
+//        new MainFrame();
+//    }
 
     public MainFrame(){
-
         initLayout();
         setListener();
         initMainFrame();
@@ -55,7 +54,7 @@ public class MainFrame extends JFrame implements ActionListener {
         this.setVisible(true);
         this.setLayout(new BorderLayout());
         this.setBackground(Color.LIGHT_GRAY);
-//        this.pack();
+        this.setResizable(false);
         this.setLocationRelativeTo(null);
     }
 
@@ -105,7 +104,6 @@ public class MainFrame extends JFrame implements ActionListener {
             listComputer.setCellRenderer(new ComputerList());
             listComputer.setVisibleRowCount(10);
             listComputer.setVisible(true);
-//            scrollPane.add(listComputer, 0);
             leftPanel.add(new JScrollPane(listComputer));
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -114,16 +112,12 @@ public class MainFrame extends JFrame implements ActionListener {
         btnPanel.setBorder(new DropShadowBorder(Color.RED, 5,5));
         btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
         btnAddComputer = new JButton("Add");
-//        MaterialUIMovement.add (btnAddComputer, MaterialColors.LIGHT_GREEN_700);
-
-//        btnAddComputer.setBackground(MaterialColors.GREEN_500);
-        btnAddComputer.setForeground(MaterialColors.BLUE_A200);
-
         btnPanel.add(btnAddComputer);
         btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        btnPanel.add(Box.createRigidArea(new Dimension(10,0)));
         btnRefresh = new JButton("Refresh");
-//        btnRefresh.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10,20,20,20)));
         btnPanel.add(btnRefresh);
+        btnPanel.add(Box.createRigidArea(new Dimension(10,0)));
         btnSetting = new JButton("Setting");
         btnPanel.add(btnSetting);
         leftPanel.add(btnPanel);
@@ -173,22 +167,23 @@ public class MainFrame extends JFrame implements ActionListener {
         tabbedPane.addTab("All files",null,allFilesPanel, "All files");
 
         this.add(tabbedPane, BorderLayout.CENTER);
+
     }
 
     void setListener(){
-        btnRefresh.addActionListener(this);
         btnAddComputer.addActionListener(this);
+        btnRefresh.addActionListener(this);
+        btnSetting.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton btn = (JButton)e.getSource();
-        if(btn == btnRefresh){
-            SettingFrame settingFrame = new SettingFrame(this);
-//            this.setEnabled(false);
+        if(btn == btnSetting){
+            new SettingFrame(this);
         }
         if(btn == btnAddComputer){
-            AddComputerFrame addComputerFrame = new AddComputerFrame();
+            new AddComputerFrame(this);
         }
     }
 }
