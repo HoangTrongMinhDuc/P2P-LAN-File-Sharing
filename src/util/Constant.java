@@ -1,4 +1,4 @@
-package Model;
+package util;
 
 public class Constant {
     public static final int OFFLINE = 0;

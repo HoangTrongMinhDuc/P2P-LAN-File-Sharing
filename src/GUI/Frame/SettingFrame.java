@@ -1,4 +1,6 @@
-package GUI;
+package GUI.Frame;
+
+import util.LocalSetting;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +23,7 @@ public class SettingFrame extends JDialog implements ActionListener {
         super(parentFrame, "Setting", false);
         this.parentFrame = parentFrame;
         initComponent();
+        importSetting();
         initLayout();
         addListener();
         initFrame();
@@ -30,7 +33,7 @@ public class SettingFrame extends JDialog implements ActionListener {
         this.inTextPath = new JTextField(32);
         this.inTextPath.setEditable(false);
         this.inTextPath.setMaximumSize(this.inTextPath.getPreferredSize());
-        this.fileChooser = new JFileChooser();
+        this.fileChooser = new JFileChooser(LocalSetting.getInstance().getDownFolderPath());
         this.btnFolderChoose = new JButton("Browse");
         this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.inTextPort = new JTextField(16);
@@ -59,17 +62,18 @@ public class SettingFrame extends JDialog implements ActionListener {
         lbFolder.setMaximumSize(lbFolder.getPreferredSize());
         lineBox1.add(lbFolder);
         lineBox1.add(Box.createHorizontalGlue());
+
         lineBox1.add(this.inTextPath);
         lineBox1.add(Box.createRigidArea(new Dimension(5, 0)));
         lineBox1.add(this.btnFolderChoose);
         this.add(lineBox1);
-
         Box lineBox2 = Box.createHorizontalBox();
         lineBox2.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
         JLabel lbPort = new JLabel("Your port");
         lbPort.setMaximumSize(lbPort.getPreferredSize());
         lineBox2.add(lbPort);
         lineBox2.add(Box.createRigidArea(new Dimension(45, 0)));
+
         lineBox2.add(inTextPort);
         lineBox2.add(Box.createHorizontalGlue());
         Box lineBox3 = Box.createHorizontalBox();
@@ -104,13 +108,46 @@ public class SettingFrame extends JDialog implements ActionListener {
         });
     }
 
+    private void importSetting(){
+        this.inTextPath.setText(LocalSetting.getInstance().getDownFolderPath());
+        this.inTextPort.setText(LocalSetting.getInstance().getPort()+"");
+        this.checkSpread.setSelected(LocalSetting.getInstance().isEnaleSpread());
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton button = (JButton) e.getSource();
+
+        if(button == this.btnApply){
+            LocalSetting.getInstance().setDownFolderPath(this.inTextPath.getText());
+            LocalSetting.getInstance().setPort(Integer.parseInt(this.inTextPort.getText()));
+            LocalSetting.getInstance().setEnaleSpread(this.checkSpread.isSelected());
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        }
+
+        if(button == this.btnDefault){
+            LocalSetting.getInstance().resetSetting();
+            this.importSetting();
+        }
+
         if(button == this.btnCancel){
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         }
 
+        if(button == this.btnFolderChoose){
+//            FolderChooseFrame folderChooseFrame = new FolderChooseFrame(this.parentFrame);
+            int p = fileChooser.showDialog(this, "Choose folder");
+
+            if(p == JFileChooser.APPROVE_OPTION){
+                this.inTextPath.setText(fileChooser.getSelectedFile().toString());
+            }
+//            fileChooser.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//
+//                }
+//            });
+        }
     }
 
     private void SwitchEnable(){

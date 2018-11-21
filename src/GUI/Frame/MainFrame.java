@@ -1,14 +1,10 @@
-package GUI;
+package GUI.Frame;
 
+import GUI.CustomComponent.ComputerList;
+import GUI.CustomComponent.FileList;
 import Model.Computer;
 import Model.FileSeed;
-import Model.FileShare;
-import mdlaf.MaterialLookAndFeel;
-import mdlaf.animation.MaterialUIMovement;
 import mdlaf.shadows.DropShadowBorder;
-import mdlaf.utils.MaterialColors;
-import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
-import org.pushingpixels.neon.NeonCortex;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -25,22 +21,9 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton btnAddComputer;
     private JButton btnRefresh;
     private JButton btnSetting;
-//    public static  void main(String args[]){
-////        try
-////        {
-////            UIManager.put("RootPane.setupButtonVisible", false);
-////            BeautyEyeLNFHelper.translucencyAtFrameInactive = true;
-////            BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.translucencySmallShadow;
-////            org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
-////        }
-////        catch(Exception e)
-////        {
-////            System.out.println(e.getMessage());
-////            //TODO exception
-////        }
-//        new MainFrame();
-//    }
-
+    private  DefaultListModel<Computer> models;
+    private JList<Computer> listComputer;
+    private JList<FileSeed> listFileSeed;
     public MainFrame(){
         initLayout();
         setListener();
@@ -59,6 +42,15 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void initLayout(){
+        initLeftSide();
+        tabbedPane = new JTabbedPane();
+        initFirstTab();
+        initSecTab();
+        this.add(tabbedPane, BorderLayout.CENTER);
+
+    }
+
+    private void initLeftSide(){
         leftPanel = new JPanel();
         leftPanel.setBorder(new TitledBorder("List connection"));
         leftPanel.setPreferredSize(new Dimension(300, 500));
@@ -66,7 +58,7 @@ public class MainFrame extends JFrame implements ActionListener {
         try {
             JScrollPane scrollPane = new JScrollPane();
             scrollPane.setPreferredSize(new Dimension(leftPanel.getWidth(), leftPanel.getHeight() * 8 / 10));
-            DefaultListModel<Computer> models = new DefaultListModel<>();
+            this.models = new DefaultListModel<>();
             models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
             models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
             models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
@@ -100,7 +92,7 @@ public class MainFrame extends JFrame implements ActionListener {
             models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
             models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
 
-            JList<Computer> listComputer = new JList<Computer>(models);
+            listComputer = new JList<Computer>(models);
             listComputer.setCellRenderer(new ComputerList());
             listComputer.setVisibleRowCount(10);
             listComputer.setVisible(true);
@@ -122,9 +114,9 @@ public class MainFrame extends JFrame implements ActionListener {
         btnPanel.add(btnSetting);
         leftPanel.add(btnPanel);
         this.add(leftPanel, BorderLayout.LINE_START);
+    }
 
-        tabbedPane = new JTabbedPane();
-//        tabbedPane.addTab("Download", new JPanel());
+    private void initFirstTab(){
         JPanel allFilesPanel = new JPanel();
         DefaultListModel<FileSeed> modelSeed = new DefaultListModel<>();
         modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
@@ -160,17 +152,21 @@ public class MainFrame extends JFrame implements ActionListener {
         modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
         modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
 
-        JList<FileSeed> listFileSeed = new JList<>(modelSeed);
+        this.listFileSeed = new JList<>(modelSeed);
+
         listFileSeed.setCellRenderer(new FileList());
         allFilesPanel.setLayout(new BorderLayout());
         allFilesPanel.add(new JScrollPane(listFileSeed), BorderLayout.CENTER);
         tabbedPane.addTab("All files",null,allFilesPanel, "All files");
-
-        this.add(tabbedPane, BorderLayout.CENTER);
-
     }
 
-    void setListener(){
+    private void initSecTab(){
+        JPanel downloadPanel = new JPanel();
+        tabbedPane.addTab("Downloading",null,downloadPanel, "Your files downloading");
+    }
+
+
+    private void setListener(){
         btnAddComputer.addActionListener(this);
         btnRefresh.addActionListener(this);
         btnSetting.addActionListener(this);
@@ -183,7 +179,7 @@ public class MainFrame extends JFrame implements ActionListener {
             new SettingFrame(this);
         }
         if(btn == btnAddComputer){
-            new AddComputerFrame(this);
+            new AddComputerFrame(this, this.models);
         }
     }
 }

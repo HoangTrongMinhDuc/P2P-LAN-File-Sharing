@@ -1,4 +1,4 @@
-package GUI;
+package GUI.CustomComponent;
 
 import Model.FileSeed;
 

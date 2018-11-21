@@ -1,6 +1,7 @@
-package GUI;
+package GUI.Frame;
 
-import Model.Constant;
+import Model.Computer;
+import util.Helper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +15,11 @@ public class AddComputerFrame extends JDialog implements ActionListener {
     private JButton btnAdd;
     private JButton btnCancel;
     private JFrame parent;
-    public AddComputerFrame(JFrame parentFrame){
+    private DefaultListModel<Computer> model;
+    public AddComputerFrame(JFrame parentFrame, DefaultListModel<Computer> model){
         super(parentFrame, "Add computer", false);
         this.parent = parentFrame;
+        this.model = model;
         initLayout();
         setListener();
         initFrame();
@@ -99,11 +102,27 @@ public class AddComputerFrame extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JButton button = (JButton) e.getSource();
         if(button == this.btnAdd){
-
+            if(validInput()){
+                this.model.addElement(new Computer("Searching", this.inTextIp.getText(), Integer.parseInt(this.inTextPort.getText())
+                        , 0, 1, null));
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            }
         }
 
         if(button == this.btnCancel){
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         }
+    }
+
+    private boolean validInput(){
+        if(!Helper.validateIp(this.inTextIp.getText())){
+            JOptionPane.showMessageDialog(this.parent, "Your IP not valid");
+            return false;
+        }
+        if(!Helper.validatePort(this.inTextPort.getText())){
+            JOptionPane.showMessageDialog(this.parent, "Your port not valid");
+            return false;
+        }
+        return true;
     }
 }
