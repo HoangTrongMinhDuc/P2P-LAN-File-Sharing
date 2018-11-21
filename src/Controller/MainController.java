@@ -1,14 +1,12 @@
 package Controller;
 
-import GUI.MainFrame;
-import sun.applet.Main;
+import GUI.Frame.MainFrame;
 
 import javax.swing.*;
 
 public class MainController {
     public static void main(String[] args){
         try {
-            // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         }
         catch (UnsupportedLookAndFeelException e) {
@@ -25,5 +23,6 @@ public class MainController {
         }
        new MainFrame();
     }
+
     public MainController(){}
 }
