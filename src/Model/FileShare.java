@@ -49,10 +49,13 @@ public class FileShare {
 
     public String getExtension(){
         return this.name.split("\\.")[this.name.split("\\.").length-1];
-//        return "file";
     }
 
     public float getMegaSize(){
         return (float)(this.size/(1024.0));
+    }
+
+    public String getObjectString(){
+        return  "{ \"name\":" + this.name + ",\"md5\":" + this.md5 + ", \"size\":" + this.size + "}";
     }
 }

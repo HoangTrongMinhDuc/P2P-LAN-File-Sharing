@@ -1,6 +1,9 @@
 package Controller;
 
 import GUI.Frame.MainFrame;
+import org.apache.commons.net.util.SubnetUtils;
+import util.ConnectKeeper;
+import util.Helper;
 
 import javax.swing.*;
 
@@ -21,8 +24,12 @@ public class MainController {
         catch (IllegalAccessException e) {
             // handle exception
         }
-       new MainFrame();
+        PackageController.getInstance();
+        SolvePacketController.getInstance();
+//        new NetworkScanner();
+//        MainFrame.getInstance();
     }
+
 
     public MainController(){}
 }

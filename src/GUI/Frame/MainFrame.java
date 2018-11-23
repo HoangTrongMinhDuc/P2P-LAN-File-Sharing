@@ -5,14 +5,20 @@ import GUI.CustomComponent.FileList;
 import Model.Computer;
 import Model.FileSeed;
 import mdlaf.shadows.DropShadowBorder;
+import util.ConnectKeeper;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame implements ActionListener {
+//    public static MainFrame instance = new MainFrame();
+//    public static MainFrame getInstance(){return instance;}
+
     private final int FRAME_WIDTH = 1024;
     private final int FRAME_HEIGHT = 680;
     private JPanel leftPanel;
@@ -22,9 +28,11 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton btnRefresh;
     private JButton btnSetting;
     private  DefaultListModel<Computer> models;
-    private JList<Computer> listComputer;
+    volatile private JList<Computer> listComputer;
     private JList<FileSeed> listFileSeed;
-    public MainFrame(){
+    private Thread updateThread = null;
+    public MainFrame(DefaultListModel<Computer> model){
+        this.models = model;
         initLayout();
         setListener();
         initMainFrame();
@@ -58,44 +66,60 @@ public class MainFrame extends JFrame implements ActionListener {
         try {
             JScrollPane scrollPane = new JScrollPane();
             scrollPane.setPreferredSize(new Dimension(leftPanel.getWidth(), leftPanel.getHeight() * 8 / 10));
-            this.models = new DefaultListModel<>();
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-
+//            this.models = new DefaultListModel<>();
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
+//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
             listComputer = new JList<Computer>(models);
             listComputer.setCellRenderer(new ComputerList());
             listComputer.setVisibleRowCount(10);
             listComputer.setVisible(true);
+            if(updateThread == null){
+                updateThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true){
+                            updateList(ConnectKeeper.getInstance().listConnected);
+                            try{
+                                Thread.sleep(1000);
+                            }catch (Exception e){
+                                System.out.println(e.getMessage());
+                            }
+
+                        }
+                    }
+                });
+//                updateThread.start();
+            }
             leftPanel.add(new JScrollPane(listComputer));
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -181,5 +205,48 @@ public class MainFrame extends JFrame implements ActionListener {
         if(btn == btnAddComputer){
             new AddComputerFrame(this, this.models);
         }
+        if(btn == btnRefresh){
+            this.listComputer.updateUI();
+        }
     }
+    public void updateList(DefaultListModel<Computer> model){
+        if(model != null){
+            System.out.println("update list1");
+            this.listComputer.setModel(model);
+            System.out.println("update list2");
+            try{
+//                this.listComputer.updateUI();
+
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+            System.out.println("update list");
+        }
+    }
+
+    public JList<Computer> getJList() {
+        listComputer.getModel().addListDataListener(new ListDataListener() {
+            @Override
+            public void intervalAdded(ListDataEvent e) {
+                System.out.println("DATA ADDDDD");
+            }
+
+            @Override
+            public void intervalRemoved(ListDataEvent e) {
+
+            }
+
+            @Override
+            public void contentsChanged(ListDataEvent e) {
+                System.out.println("DATA CHANGEEEE");
+            }
+        });
+
+        return this.listComputer;
+    }
+
+    public void addNewCom(Computer computer){
+        this.models.addElement(computer);
+    }
+//    public static void setList()
 }

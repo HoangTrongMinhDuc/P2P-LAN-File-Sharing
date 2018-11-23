@@ -1,6 +1,7 @@
 package GUI.CustomComponent;
 
 import Model.Computer;
+import util.Constant;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,7 @@ public class ComputerList extends JPanel implements ListCellRenderer<Computer> {
 
     @Override
     public Component getListCellRendererComponent(JList<? extends Computer> list, Computer value, int index, boolean isSelected, boolean cellHasFocus) {
-        this.lbComputerName.setText(value.getName());
+        this.lbComputerName.setText(value.getName() + (value.getStatus()== Constant.ONLINE ?" ONLINE":" BUSY"));
         this.lbComputerAddress.setText(value.getIp() + ":" + value.getPort());
         return this;
     }

@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.HashMap;
 
 public class Computer {
-    private String name;
-    private String ip;
-    private int port;
-    private int timestamp;
-    private int status;
-    private HashMap<String, FileShare> listFileShare;
+    protected String name = "CON";
+    protected String ip;
+    protected int port;
+    protected int timestamp;
+    protected int status;
+    protected HashMap<String, FileShare> listFileShare;
     public Computer(){}
 
     public Computer(String name, String ip, int port, int timestamp, int status, HashMap<String, FileShare> listFileShare){
@@ -90,8 +90,18 @@ public class Computer {
     }
 
     public boolean isSame(Computer computer){
+        if(this.ip.equals(computer.getIp()))
+            return true;
+        else
+            return false;
+    }
 
-        return true;
+    public int compareTo(Computer computer){
+        return this.ip.compareTo(computer.getIp());
+    }
+
+    public Computer clone(){
+        return new Computer(this.name, this.ip, this.port, this.timestamp, this.status, this.listFileShare);
     }
 
     @Override

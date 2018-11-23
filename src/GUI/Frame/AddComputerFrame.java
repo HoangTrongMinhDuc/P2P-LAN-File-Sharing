@@ -115,7 +115,7 @@ public class AddComputerFrame extends JDialog implements ActionListener {
     }
 
     private boolean validInput(){
-        if(!Helper.validateIp(this.inTextIp.getText())){
+        if(!Helper.validateIp4(this.inTextIp.getText())){
             JOptionPane.showMessageDialog(this.parent, "Your IP not valid");
             return false;
         }

@@ -1,5 +1,6 @@
 package GUI.Frame;
 
+import Model.MyComputer;
 import util.LocalSetting;
 
 import javax.swing.*;
@@ -8,7 +9,7 @@ import java.awt.event.*;
 
 public class SettingFrame extends JDialog implements ActionListener {
     private final int WIDTH_FRAME = 480;
-    private final int HEIGHT_FRAME = 160;
+    private final int HEIGHT_FRAME = 180;
     private JFrame parentFrame;
     private JTextField inTextPath;
     private JFileChooser fileChooser;
@@ -50,11 +51,24 @@ public class SettingFrame extends JDialog implements ActionListener {
         this.setTitle("Setting");
         this.setModal(true);
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
         this.setVisible(true);
     }
 
     void initLayout(){
         this.setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+
+
+        Box lineBox0 = Box.createHorizontalBox();
+        lineBox0.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
+        JLabel lbLocalIp = new JLabel("Your local IP");
+        lbLocalIp.setMaximumSize(lbLocalIp.getPreferredSize());
+        lineBox0.add(lbLocalIp);
+
+        lineBox0.add(Box.createRigidArea(new Dimension(40, 0)));
+        lineBox0.add(new JLabel(MyComputer.getInstance().getIp()+"/"+MyComputer.getInstance().getSubnetMask()));
+        lineBox0.add(Box.createHorizontalGlue());
+        this.add(lineBox0);
 
         Box lineBox1 = Box.createHorizontalBox();
         lineBox1.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
@@ -67,6 +81,7 @@ public class SettingFrame extends JDialog implements ActionListener {
         lineBox1.add(Box.createRigidArea(new Dimension(5, 0)));
         lineBox1.add(this.btnFolderChoose);
         this.add(lineBox1);
+
         Box lineBox2 = Box.createHorizontalBox();
         lineBox2.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
         JLabel lbPort = new JLabel("Your port");
