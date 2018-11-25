@@ -16,8 +16,7 @@ public class PackageController {
     public final static byte[] BUFFER = new byte[4096];
     private boolean isFirstTime = true;
     private DatagramSocket datagramSocket = null;
-    private DatagramSocket datagramSocketReceive = null;
-    volatile private Queue<DatagramPacket> queueReceivePacket = new LinkedList<DatagramPacket>();
+    volatile private Queue<DatagramPacket> queueReceivePacket = new LinkedList<>();
 
     private static PackageController instance = new PackageController();
     public static PackageController getInstance(){return instance;}

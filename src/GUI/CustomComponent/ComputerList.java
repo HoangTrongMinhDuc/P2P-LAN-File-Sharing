@@ -31,7 +31,27 @@ public class ComputerList extends JPanel implements ListCellRenderer<Computer> {
 
     @Override
     public Component getListCellRendererComponent(JList<? extends Computer> list, Computer value, int index, boolean isSelected, boolean cellHasFocus) {
-        this.lbComputerName.setText(value.getName() + (value.getStatus()== Constant.ONLINE ?" ONLINE":" BUSY"));
+        String src = "";
+        switch (value.getStatus()){
+            case Constant.ONLINE:{
+                src = Constant.ONLINE_ICON;
+                break;
+            }
+            case Constant.PENDING:{
+                src = Constant.PENDING_ICON;
+                break;
+            }
+            case Constant.OFFLINE:{
+                src = Constant.OFFLINE_ICON;
+                break;
+            }
+            case Constant.CHECKING:{
+                src = Constant.CHECKING_ICON;
+                break;
+            }
+        }
+        lbStatus.setIcon(new ImageIcon(src));
+        this.lbComputerName.setText(value.getName());
         this.lbComputerAddress.setText(value.getIp() + ":" + value.getPort());
         return this;
     }

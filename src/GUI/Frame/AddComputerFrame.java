@@ -1,6 +1,8 @@
 package GUI.Frame;
 
 import Model.Computer;
+import util.ConnectKeeper;
+import util.Constant;
 import util.Helper;
 
 import javax.swing.*;
@@ -103,8 +105,9 @@ public class AddComputerFrame extends JDialog implements ActionListener {
         JButton button = (JButton) e.getSource();
         if(button == this.btnAdd){
             if(validInput()){
-                this.model.addElement(new Computer("Searching", this.inTextIp.getText(), Integer.parseInt(this.inTextPort.getText())
-                        , 0, 1, null));
+                String timestamp = System.currentTimeMillis()/1000 +"";
+                ConnectKeeper.getInstance().addComputer(new Computer("Searching", this.inTextIp.getText(), Integer.parseInt(this.inTextPort.getText())
+                        , Integer.parseInt(timestamp), Constant.CHECKING, null));
                 this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             }
         }
