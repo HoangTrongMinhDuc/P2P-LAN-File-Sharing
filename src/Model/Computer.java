@@ -9,7 +9,7 @@ public class Computer {
     protected int port;
     protected int timestamp;
     protected int status;
-    protected HashMap<String, FileShare> listFileShare;
+    protected HashMap<String, FileShare> listFileShare = new HashMap<>();
     public Computer(){}
 
     public Computer(String name, String ip, int port, int timestamp, int status, HashMap<String, FileShare> listFileShare){

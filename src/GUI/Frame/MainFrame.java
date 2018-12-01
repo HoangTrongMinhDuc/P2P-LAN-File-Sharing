@@ -2,6 +2,7 @@ package GUI.Frame;
 
 import GUI.CustomComponent.ComputerList;
 import GUI.CustomComponent.FileList;
+import GUI.Tab.SharingTab;
 import Model.Computer;
 import Model.FileSeed;
 import mdlaf.shadows.DropShadowBorder;
@@ -54,6 +55,7 @@ public class MainFrame extends JFrame implements ActionListener {
         tabbedPane = new JTabbedPane();
         initFirstTab();
         initSecTab();
+        iniThirdTab();
         this.add(tabbedPane, BorderLayout.CENTER);
 
     }
@@ -143,9 +145,9 @@ public class MainFrame extends JFrame implements ActionListener {
     private void initFirstTab(){
         JPanel allFilesPanel = new JPanel();
         DefaultListModel<FileSeed> modelSeed = new DefaultListModel<>();
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hellretyryo.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "B03AD0C9C6C91EF7A2CA78EF84C6033E", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hello.planet", "B03AD0C9C6C91EF7A2CA78EF84C6033E", 1024, "C://", null, 4));
+        modelSeed.addElement(new FileSeed("Hellretyryo.planet", "B03AD0C9C6C91EF7A2CA78EF84C6033E", 1024, "C://", null, 4));
         modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
         modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
         modelSeed.addElement(new FileSeed("Hello.rtytreyplanet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
@@ -187,6 +189,11 @@ public class MainFrame extends JFrame implements ActionListener {
     private void initSecTab(){
         JPanel downloadPanel = new JPanel();
         tabbedPane.addTab("Downloading",null,downloadPanel, "Your files downloading");
+    }
+
+    private void iniThirdTab(){
+        SharingTab sharingTab = new SharingTab();
+        tabbedPane.addTab("Sharing", null, sharingTab, "Your sharing files");
     }
 
 
