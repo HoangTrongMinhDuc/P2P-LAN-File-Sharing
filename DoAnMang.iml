@@ -8,9 +8,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="material-ui-swing" level="project" />
-    <orderEntry type="library" name="SwingSets2(BeautyEyeLNFDemo)" level="project" />
     <orderEntry type="library" name="org.pushing-pixels:radiance-neon:1.0.2" level="project" />
     <orderEntry type="library" name="com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="library" name="commons-net:commons-net:3.6" level="project" />
+    <orderEntry type="library" name="org.apache.poi:poi-ooxml:4.0.0" level="project" />
   </component>
 </module>
