@@ -1,5 +1,7 @@
 package Model;
 
+import util.Helper;
+
 public class FileShare {
     private String name;
     private String md5;
@@ -52,10 +54,14 @@ public class FileShare {
     }
 
     public float getMegaSize(){
-        return (float)(this.size/(1024.0));
+        return Helper.round((float)(this.size/(1024.0*1024.0)), 2);
     }
 
     public String getObjectString(){
-        return  "{ \"name\":" + this.name + ",\"md5\":" + this.md5 + ", \"size\":" + this.size + "}";
+        return  "{ \"name\":\"" + this.name + "\",\"md5\":\"" + this.md5 + "\", \"size\":" + this.size + "}";
+    }
+
+    public void print(){
+        System.out.println(this.name + "|" + this.md5 + "|" + this.size + "|" + this.path);
     }
 }

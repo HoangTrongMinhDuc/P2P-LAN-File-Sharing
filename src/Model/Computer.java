@@ -97,7 +97,25 @@ public class Computer {
     }
 
     public int compareTo(Computer computer){
-        return this.ip.compareTo(computer.getIp());
+        String ip1 = this.ip;
+        String ip2 = computer.getIp();
+        if(ip1.length() != 11)
+            ip1 = reCompleteIp(ip1);
+        if(computer.getIp().length() != 11)
+            ip2 = reCompleteIp(ip2);
+        return ip1.compareTo(ip2);
+    }
+
+    public String reCompleteIp(String ip){
+        String[] ips = ip.split("[.]");
+        for (int i = 0; i < ips.length; i++){
+            if(ips[i].length() < 3){
+                for(int j = 0; j <= (3-ips[i].length()); j++){
+                    ips[i] = "0" + ips[i];
+                }
+            }
+        }
+        return ips[0]+"."+ips[1]+"."+ips[2]+"."+ips[3];
     }
 
     public Computer clone(){

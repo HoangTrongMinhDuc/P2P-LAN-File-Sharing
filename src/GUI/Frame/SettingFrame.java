@@ -1,6 +1,6 @@
 package GUI.Frame;
 
-import Model.MyComputer;
+import Controller.MyComputer;
 import util.LocalSetting;
 
 import javax.swing.*;

@@ -1,8 +1,11 @@
 package util;
 
+import Model.FileSeed;
 import Model.FileShare;
 import com.google.gson.JsonObject;
 
+import javax.swing.*;
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 public class Helper {
@@ -18,6 +21,51 @@ public class Helper {
     }
 
     public static FileShare convertToFileShare(JsonObject jsonObject){
-        return null;
+        return new FileShare(jsonObject.get("name").getAsString(), jsonObject.get("md5").getAsString(), jsonObject.get("size").getAsInt(), "Not set");
+    }
+
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
+    }
+
+    public static void insertElement(DefaultListModel<FileSeed> model, FileSeed fileSeed){
+        if(model.size() == 0) {
+            model.addElement(fileSeed);
+        }else{
+            for(int i = 0; i < model.size(); i++){
+                FileSeed fileSeed1 = model.get(i);
+                int compareRes = fileSeed.getName().toLowerCase().compareTo(fileSeed1.getName().toLowerCase());
+                if(compareRes > 0){
+                    if(i == model.size() - 1){
+                        model.addElement(fileSeed);
+                        break;
+                    }
+                    continue;
+                }else {
+                    if(compareRes < 0){
+                        model.add(i, fileSeed);
+                        break;
+                    }else {
+                        model.setElementAt(fileSeed, i);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public static String getStatus(int id){
+        switch (id){
+            case Constant.SHARING:
+                return "Shared";
+            case Constant.SHARED:
+                return "Shared";
+            case Constant.OFFLINE:
+                return "Offline";
+            default:
+                return "";
+        }
     }
 }

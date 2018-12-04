@@ -15,6 +15,12 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
     private JLabel lbNumCom;
     private JLabel lbMd5;
     private JLabel lbOpen;
+    private JPanel horiPanel;
+    private JPanel firstPanel;
+    private JPanel fileInfoPanel;
+    private JPanel namePanel;
+    private JPanel fileSizePanel;
+    private JPanel downPanel;
     public FileList(){
         //create label contain file info
         lbName = new JLabel();
@@ -32,21 +38,21 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
         this.setBorder(BorderFactory.createEmptyBorder(5, 10, 5,10));
 
         //create container for info labels
-        JPanel horiPanel = new JPanel();
+        horiPanel = new JPanel();
         horiPanel.setLayout(new BoxLayout(horiPanel, BoxLayout.X_AXIS));
         horiPanel.setBackground(Color.WHITE);
         Dimension fileInfoSize = new Dimension(100, 50);
-        JPanel firstPanel = new JPanel();
+        firstPanel = new JPanel();
         firstPanel.setLayout(null);
         Dimension firstCol = new Dimension(250, 100);
         firstPanel.setSize(firstCol);
         firstPanel.setPreferredSize(firstCol);
         firstPanel.setMaximumSize(firstCol);
-        JPanel fileInfoPanel = new JPanel();
+        fileInfoPanel = new JPanel();
         fileInfoPanel.setLayout(new BoxLayout(fileInfoPanel, BoxLayout.Y_AXIS));
         fileInfoPanel.setSize(fileInfoSize);
         fileInfoPanel.setPreferredSize(fileInfoSize);
-        JPanel namePanel = new JPanel();
+        namePanel = new JPanel();
         namePanel.setBackground(Color.WHITE);
         namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
         namePanel.add(lbName);
@@ -55,7 +61,7 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
         lbName.setAlignmentX(Component.LEFT_ALIGNMENT);
         fileInfoPanel.add(namePanel);
         fileInfoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        JPanel fileSizePanel = new JPanel();
+        fileSizePanel = new JPanel();
         fileSizePanel.setBackground(Color.WHITE);
         fileSizePanel.setLayout(new BoxLayout(fileSizePanel, BoxLayout.X_AXIS));
         lbFileEx.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -68,16 +74,23 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
         fileInfoPanel.add(fileSizePanel);
         fileInfoPanel.setBackground(Color.WHITE);
         fileInfoPanel.setMaximumSize(new Dimension(250, 40));
+        fileInfoPanel.setPreferredSize(fileInfoPanel.getMaximumSize());
+        fileInfoPanel.setMinimumSize(fileInfoPanel.getMaximumSize());
         horiPanel.add(fileInfoPanel);
-        lbMoreInfo.setIcon(new ImageIcon(new ImageIcon("src/res/icon-info.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
-        horiPanel.add(lbMoreInfo);
         horiPanel.add(Box.createRigidArea(new Dimension(20,0)));
+        downPanel = new JPanel();
+        downPanel.setBackground(Color.WHITE);
+        downPanel.setMaximumSize(new Dimension(100, 50));
+        downPanel.setMinimumSize(downPanel.getMaximumSize());
+        downPanel.setPreferredSize(downPanel.getMaximumSize());
         lbFileStatus.setIcon(new ImageIcon("src/res/down-icon.png"));
-        horiPanel.add(lbFileStatus);
+        downPanel.add(lbFileStatus);
+        horiPanel.add(downPanel);
         horiPanel.add(Box.createRigidArea(new Dimension(20, 0)));
         lbNumCom.setIcon(new ImageIcon(new ImageIcon("src/res/com.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         horiPanel.add(lbNumCom);
         horiPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+        horiPanel.add(Box.createHorizontalGlue());
         horiPanel.add(lbMd5);
         horiPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         lbOpen.setIcon(new ImageIcon("src/res/open.png"));
@@ -89,9 +102,6 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
     @Override
     public Component getListCellRendererComponent(JList<? extends FileSeed> list, FileSeed value, int index, boolean isSelected, boolean cellHasFocus) {
         String nameFile = value.getName();
-//        if(value.getName().length() >= 32){
-//            nameFile = nameFile.substring(0,30) + "...";
-//        }
         lbName.setText(nameFile);
         lbFileEx.setText(value.getExtension().toUpperCase());
         lbFileSize.setText(String.valueOf(value.getMegaSize()) + " MB");
@@ -100,7 +110,24 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
         }else{
             lbNumCom.setText(value.getListComputer().size() + "");
         }
-        lbMd5.setText(value.getMd5());
+        lbMd5.setText(value.getMd5().toUpperCase());
+//        if(isSelected){
+//            this.setBackground(Color.lightGray);
+//            this.horiPanel.setBackground(Color.lightGray);
+//            this.firstPanel.setBackground(Color.lightGray);
+//            this.fileInfoPanel.setBackground(Color.lightGray);
+//            this.namePanel.setBackground(Color.lightGray);
+//            this.fileSizePanel.setBackground(Color.lightGray);
+//            this.downPanel.setBackground(Color.lightGray);
+//        }else{
+//            this.setBackground(Color.WHITE);
+//            this.horiPanel.setBackground(Color.WHITE);
+//            this.firstPanel.setBackground(Color.WHITE);
+//            this.fileInfoPanel.setBackground(Color.WHITE);
+//            this.namePanel.setBackground(Color.WHITE);
+//            this.fileSizePanel.setBackground(Color.WHITE);
+//            this.downPanel.setBackground(Color.WHITE);
+//        }
         return this;
     }
 }

@@ -2,12 +2,10 @@ package Controller;
 
 import Model.Computer;
 import Model.FileShare;
-import Model.MyComputer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import util.ConnectKeeper;
 import util.Constant;
 import util.Helper;
 
@@ -60,6 +58,10 @@ public class SolvePacketController {
                             solveDataPacket();
                             break;
                         }
+                        case Constant.CONTROL_MES:
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -80,7 +82,7 @@ public class SolvePacketController {
             listShare.put(fileShare.getMd5(), fileShare);
         }
         System.out.println("Solve hello from " + ip);
-        ConnectKeeper.getInstance().addComputer(new Computer(comName, ip, port, timeStamp, Constant.ONLINE, listShare));
+        MyComputer.getInstance().addComputer(new Computer(comName, ip, port, timeStamp, Constant.ONLINE, listShare));
     }
 
     private void solveDataPacket(){

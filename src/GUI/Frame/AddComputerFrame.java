@@ -1,7 +1,7 @@
 package GUI.Frame;
 
+import Controller.MyComputer;
 import Model.Computer;
-import util.ConnectKeeper;
 import util.Constant;
 import util.Helper;
 
@@ -53,7 +53,7 @@ public class AddComputerFrame extends JDialog implements ActionListener {
         lineBox2.add(lb2);
         lineBox2.add(Box.createRigidArea(new Dimension(10, 0)));
         inTextPort.setMaximumSize(inTextPort.getPreferredSize());
-        inTextPort.setText("6969");
+        inTextPort.setText(Constant.DEFAULT_PORT+"");
         inTextPort.setForeground(Color.LIGHT_GRAY);
         lineBox2.add(inTextPort);
         this.add(lineBox2);
@@ -83,7 +83,7 @@ public class AddComputerFrame extends JDialog implements ActionListener {
             @Override
             public void focusGained(FocusEvent e) {
                 JTextField textField = (JTextField)e.getSource();
-                if(textField.getText().equals("6969")){
+                if(textField.getText().equals(Constant.DEFAULT_PORT+"")){
                     textField.setText("");
                     textField.setForeground(Color.BLACK);
                 }
@@ -94,7 +94,7 @@ public class AddComputerFrame extends JDialog implements ActionListener {
                 JTextField textField = (JTextField)e.getSource();
                 if(textField.getText().length() == 0){
                     textField.setForeground(Color.LIGHT_GRAY);
-                    textField.setText("6969");
+                    textField.setText(Constant.DEFAULT_PORT+"");
                 }
             }
         });
@@ -106,7 +106,7 @@ public class AddComputerFrame extends JDialog implements ActionListener {
         if(button == this.btnAdd){
             if(validInput()){
                 String timestamp = System.currentTimeMillis()/1000 +"";
-                ConnectKeeper.getInstance().addComputer(new Computer("Searching", this.inTextIp.getText(), Integer.parseInt(this.inTextPort.getText())
+                MyComputer.getInstance().addComputer(new Computer("Waiting", this.inTextIp.getText(), Integer.parseInt(this.inTextPort.getText())
                         , Integer.parseInt(timestamp), Constant.CHECKING, null));
                 this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             }

@@ -1,18 +1,18 @@
 package util;
 
 import Model.FileShare;
-import Model.MyComputer;
+import Controller.MyComputer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class FileSharedHolder {
     private File fileHolder = new File("fileHoder.json");
@@ -53,20 +53,21 @@ public class FileSharedHolder {
                     listFileSrc.add(jsonArray.get(i).getAsString());
                 }
             }
+            validFile();
         }catch (Exception e){
             System.out.println("Error read holder: " + e.getMessage());
         }
     }
 
-    private void writeHolder(){
-        HashMap<String, FileShare> listFileShared = MyComputer.getInstance().getListFileShare();
+    public void writeHolder(){
+        DefaultListModel<FileShare> listFileShared = MyComputer.getInstance().getSharingList();
         this.listFileSrc.clear();
-        for(FileShare file : listFileShared.values()){
-            this.listFileSrc.add(file.getPath());
+        for(int i = 0; i < listFileShared.size(); i++){
+            this.listFileSrc.add(listFileShared.get(i).getPath());
         }
         String json = "{\"src\":[";
         for(int i = 0; i < this.listFileSrc.size(); i++){
-            json += "\"" + this.listFileSrc.get(i) + "\"";
+            json += "\"" + this.listFileSrc.get(i).replace("\\", "\\\\") + "\"";
             if(i != this.listFileSrc.size() - 1){
                 json += ",";
             }
@@ -79,7 +80,16 @@ public class FileSharedHolder {
             writer.close();
             System.out.println("Write holder successfull");
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Write holder: " + e.getMessage());
+        }
+    }
+
+    private void validFile(){
+        for(String path : this.listFileSrc){
+            File file = new File(path);
+            if(!file.exists()){
+                this.listFileSrc.remove(path);
+            }
         }
     }
 

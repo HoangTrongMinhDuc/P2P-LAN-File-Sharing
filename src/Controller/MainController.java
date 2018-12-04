@@ -1,11 +1,5 @@
 package Controller;
 
-import GUI.Frame.MainFrame;
-import org.apache.commons.net.util.SubnetUtils;
-import util.ConnectKeeper;
-import util.FileSharedHolder;
-import util.Helper;
-
 import javax.swing.*;
 
 public class MainController {
@@ -28,7 +22,8 @@ public class MainController {
 
         PackageController.getInstance();
         SolvePacketController.getInstance();
-        FileSharedHolder.getInstance();
+//        FileSharedHolder.getInstance();
+        MyComputer.getInstance().start();
 //        new NetworkScanner();
 //        MainFrame.getInstance();
     }

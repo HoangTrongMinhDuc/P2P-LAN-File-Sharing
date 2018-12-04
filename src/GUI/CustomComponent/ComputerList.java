@@ -10,6 +10,7 @@ public class ComputerList extends JPanel implements ListCellRenderer<Computer> {
     private JLabel lbStatus;
     private JLabel lbComputerName;
     private JLabel lbComputerAddress;
+    JPanel comPanel;
     public ComputerList(){
         setOpaque(true);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -19,13 +20,15 @@ public class ComputerList extends JPanel implements ListCellRenderer<Computer> {
         this.add(lbStatus);
         lbStatus.setIcon(new ImageIcon("src/res/active.png"));
         this.add(Box.createHorizontalStrut(10));
-        JPanel comPanel = new JPanel();
+        comPanel = new JPanel();
+        comPanel.setBackground(Color.WHITE);
         comPanel.setLayout(new BoxLayout(comPanel, BoxLayout.Y_AXIS));
         lbComputerName = new JLabel();
         comPanel.add(lbComputerName);
         lbComputerAddress = new JLabel();
         comPanel.add(lbComputerAddress);
         this.add(comPanel);
+        this.setBackground(Color.WHITE);
 
     }
 
@@ -53,6 +56,12 @@ public class ComputerList extends JPanel implements ListCellRenderer<Computer> {
         lbStatus.setIcon(new ImageIcon(src));
         this.lbComputerName.setText(value.getName());
         this.lbComputerAddress.setText(value.getIp() + ":" + value.getPort());
+        if(isSelected){
+            this.setBackground(new Color(255, 231, 217));
+            this.comPanel.setBackground(new Color(255, 231, 217));
+        }else {
+            this.setBackground(Color.WHITE);
+        }
         return this;
     }
 }

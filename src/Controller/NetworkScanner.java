@@ -1,13 +1,9 @@
 package Controller;
 
-import Model.MyComputer;
 import org.apache.commons.net.util.SubnetUtils;
 import util.Helper;
-import util.LocalSetting;
 
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 
@@ -51,7 +47,7 @@ public class NetworkScanner {
             this.allAddresses = utils.getInfo().getAllAddresses();
             this.checkList = new int[this.allAddresses.length];
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Get local address: " + e.getMessage());
         }
 
     }

@@ -35,7 +35,7 @@ public class LocalSetting {
                 writer.close();
                 System.out.println("Created setting file");
             }catch (Exception e){
-                System.out.println(e.getMessage());
+                System.out.println("Create setting: " + e.getMessage());
             }
             writeSetting();
         }
@@ -51,7 +51,7 @@ public class LocalSetting {
             writer.close();
             System.out.println("Write setting successfull");
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Write setting: " + e.getMessage());
         }
 
     }
@@ -68,7 +68,7 @@ public class LocalSetting {
                 this.isEnaleSpread = settingObject.get("EnableSpread").getAsBoolean();
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Read setting: " + e.getMessage());
         }
     }
 

@@ -1,7 +1,5 @@
 package Controller;
 
-import Model.MyComputer;
-import util.ConnectKeeper;
 import util.Constant;
 import util.LocalSetting;
 
@@ -10,7 +8,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 
 public class PackageController {
     public final static byte[] BUFFER = new byte[4096];
@@ -25,7 +22,7 @@ public class PackageController {
         try{
                 datagramSocket = new DatagramSocket(LocalSetting.getInstance().getPort());
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Create socket: " + e.getMessage());
         }
         //start receive mess
         Thread receiveUdpThread = new Thread(new Runnable() {
@@ -54,7 +51,7 @@ public class PackageController {
                         greetAllComputer();
                         Thread.sleep(Constant.REFRESH_GREET_TIME);
                     }catch (Exception e){
-                        System.out.println(e.getMessage());
+                        System.out.println("Greet thread: " + e.getMessage());
                     }
                 }
             }
@@ -68,7 +65,7 @@ public class PackageController {
             while (true){
                 DatagramPacket incoming = new DatagramPacket(BUFFER, BUFFER.length);
                 datagramSocket.receive(incoming);
-                String message = new String(incoming.getData(), 0, incoming.getLength());
+                String message = new String(incoming.getData(), incoming.getOffset(), incoming.getLength());
                 System.out.println("Received: " + message + "|" + incoming.getAddress().getHostAddress() + ":" + incoming.getPort());
                 this.queueReceivePacket.add(incoming);
             }
@@ -99,7 +96,7 @@ public class PackageController {
                 this.isFirstTime = false;
                 System.out.println("First time hello");
             }else {
-                allAddress = ConnectKeeper.getInstance().getAllAliveConnect();
+                allAddress = MyComputer.getInstance().getAllAliveConnect();
                 System.out.println("Hello frequency");
             }
             if(allAddress != null)
@@ -120,7 +117,7 @@ public class PackageController {
             DatagramPacket datagramPacket = new DatagramPacket(mes.getBytes(), mes.length(), InetAddress.getByName(ip), port);
             datagramSocket.send(datagramPacket);
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Send UDP: " + e.getMessage());
         }
     }
 

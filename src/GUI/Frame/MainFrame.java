@@ -1,12 +1,12 @@
 package GUI.Frame;
 
+import Controller.MyComputer;
 import GUI.CustomComponent.ComputerList;
 import GUI.CustomComponent.FileList;
 import GUI.Tab.SharingTab;
 import Model.Computer;
 import Model.FileSeed;
 import mdlaf.shadows.DropShadowBorder;
-import util.ConnectKeeper;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -15,6 +15,9 @@ import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class MainFrame extends JFrame implements ActionListener {
 //    public static MainFrame instance = new MainFrame();
@@ -110,11 +113,11 @@ public class MainFrame extends JFrame implements ActionListener {
                     @Override
                     public void run() {
                         while (true){
-                            updateList(ConnectKeeper.getInstance().listConnected);
+                            updateList(MyComputer.getInstance().listConnected);
                             try{
                                 Thread.sleep(1000);
                             }catch (Exception e){
-                                System.out.println(e.getMessage());
+                                System.out.println("2323"+e.getMessage());
                             }
 
                         }
@@ -124,7 +127,7 @@ public class MainFrame extends JFrame implements ActionListener {
             }
             leftPanel.add(new JScrollPane(listComputer));
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Left panel: " + e.getMessage());
         }
         JPanel btnPanel = new JPanel();
         btnPanel.setBorder(new DropShadowBorder(Color.RED, 5,5));
@@ -144,46 +147,36 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private void initFirstTab(){
         JPanel allFilesPanel = new JPanel();
-        DefaultListModel<FileSeed> modelSeed = new DefaultListModel<>();
-        modelSeed.addElement(new FileSeed("Hello.planet", "B03AD0C9C6C91EF7A2CA78EF84C6033E", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "B03AD0C9C6C91EF7A2CA78EF84C6033E", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hellretyryo.planet", "B03AD0C9C6C91EF7A2CA78EF84C6033E", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.rtytreyplanet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hellwerddddddddddddddddddddddddddddddddddddddddddddddddddddddtwerterto.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Helloewtr.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Helretyeytrlo.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Helewrterlo.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hellshterhreho.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.plgesrtanet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-        modelSeed.addElement(new FileSeed("Hello.planet", "2ceedd09fbf1c6e372e1b9a664b22a7574a78e51", 1024, "C://", null, 4));
-
-        this.listFileSeed = new JList<>(modelSeed);
-
+        this.listFileSeed = new JList<>(MyComputer.getInstance().getSharedList());
         listFileSeed.setCellRenderer(new FileList());
         allFilesPanel.setLayout(new BorderLayout());
         allFilesPanel.add(new JScrollPane(listFileSeed), BorderLayout.CENTER);
         tabbedPane.addTab("All files",null,allFilesPanel, "All files");
+//        listFileSeed.setSelectionModel(new DefaultListSelectionModel(){
+//            private static final long serialVersionUID = 1L;
+//
+//            boolean gestureStarted = false;
+//
+//            @Override
+//            public void setSelectionInterval(int index0, int index1) {
+//                if(!gestureStarted){
+//                    if (isSelectedIndex(index0)) {
+//                        super.removeSelectionInterval(index0, index1);
+//                    } else {
+//                        super.addSelectionInterval(index0, index1);
+//                    }
+//                }
+//                gestureStarted = true;
+//            }
+//
+//            @Override
+//            public void setValueIsAdjusting(boolean isAdjusting) {
+//                if (isAdjusting == false) {
+//                    gestureStarted = false;
+//                }
+//            }
+//
+//        });
     }
 
     private void initSecTab(){
@@ -201,6 +194,14 @@ public class MainFrame extends JFrame implements ActionListener {
         btnAddComputer.addActionListener(this);
         btnRefresh.addActionListener(this);
         btnSetting.addActionListener(this);
+        listFileSeed.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                int index = listFileSeed.locationToIndex(e.getPoint());
+                openFileDetail(MyComputer.getInstance().getSharedList().getElementAt(index));
+            }
+        });
     }
 
     @Override
@@ -215,6 +216,11 @@ public class MainFrame extends JFrame implements ActionListener {
         if(btn == btnRefresh){
             this.listComputer.updateUI();
         }
+    }
+
+    private void openFileDetail(FileSeed fileSeed){
+        System.out.println("open detail");
+        new DetailFileSeedFrame(this, fileSeed);
     }
     public void updateList(DefaultListModel<Computer> model){
         if(model != null){
