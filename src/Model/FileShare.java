@@ -3,10 +3,10 @@ package Model;
 import util.Helper;
 
 public class FileShare {
-    private String name;
-    private String md5;
-    private int size;
-    private String path;
+    protected String name;
+    protected String md5;
+    protected int size;
+    protected String path;
 
     public FileShare(){}
 

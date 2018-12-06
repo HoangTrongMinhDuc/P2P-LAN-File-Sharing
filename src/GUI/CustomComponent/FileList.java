@@ -1,6 +1,7 @@
 package GUI.CustomComponent;
 
 import Model.FileSeed;
+import util.Constant;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,12 +10,9 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
     private JLabel lbName;
     private JLabel lbFileEx;
     private JLabel lbFileSize;
-    private JProgressBar progressBar;
-    private JLabel lbMoreInfo;
     private JLabel lbFileStatus;
     private JLabel lbNumCom;
     private JLabel lbMd5;
-    private JLabel lbOpen;
     private JPanel horiPanel;
     private JPanel firstPanel;
     private JPanel fileInfoPanel;
@@ -26,12 +24,9 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
         lbName = new JLabel();
         lbFileSize = new JLabel();
         lbFileEx = new JLabel();
-        lbMoreInfo = new JLabel();
         lbFileStatus = new JLabel();
         lbNumCom = new JLabel();
         lbMd5 = new JLabel();
-        lbOpen = new JLabel();
-        progressBar = new JProgressBar();
         //create main wrapper
         this.setBackground(Color.WHITE);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -83,7 +78,7 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
         downPanel.setMaximumSize(new Dimension(100, 50));
         downPanel.setMinimumSize(downPanel.getMaximumSize());
         downPanel.setPreferredSize(downPanel.getMaximumSize());
-        lbFileStatus.setIcon(new ImageIcon("src/res/down-icon.png"));
+        lbFileStatus.setIcon(new ImageIcon(Constant.SHARED_ICON));
         downPanel.add(lbFileStatus);
         horiPanel.add(downPanel);
         horiPanel.add(Box.createRigidArea(new Dimension(20, 0)));
@@ -93,14 +88,29 @@ public class FileList extends JPanel implements ListCellRenderer<FileSeed> {
         horiPanel.add(Box.createHorizontalGlue());
         horiPanel.add(lbMd5);
         horiPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        lbOpen.setIcon(new ImageIcon("src/res/open.png"));
-//        horiPanel.add(lbOpen);
         this.add(horiPanel);
 
 
     }
     @Override
     public Component getListCellRendererComponent(JList<? extends FileSeed> list, FileSeed value, int index, boolean isSelected, boolean cellHasFocus) {
+        switch (value.getStatus()){
+            case Constant.DOWNLOADING:
+            {
+                lbFileStatus.setIcon(new ImageIcon(Constant.DOWNLOAD_ICON));
+                break;
+            }
+            case Constant.SHARING:
+            {
+                lbFileStatus.setIcon(new ImageIcon(Constant.SHARING_ICON));
+                break;
+            }
+            case Constant.SHARED:
+            {
+                lbFileStatus.setIcon(new ImageIcon(Constant.SHARED_ICON));
+                break;
+            }
+        }
         String nameFile = value.getName();
         lbName.setText(nameFile);
         lbFileEx.setText(value.getExtension().toUpperCase());

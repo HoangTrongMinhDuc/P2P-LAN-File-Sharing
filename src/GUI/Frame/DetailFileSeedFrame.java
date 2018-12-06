@@ -1,5 +1,6 @@
 package GUI.Frame;
 
+import Controller.MyComputer;
 import Model.Computer;
 import Model.FileSeed;
 import util.Constant;
@@ -28,9 +29,9 @@ public class DetailFileSeedFrame extends JDialog implements ActionListener {
     private JButton closeBtn;
     private JButton checkBtn;
     private TableDemo tableDemo;
-    public DetailFileSeedFrame(JFrame parentFrame, FileSeed fileSeed){
-        super(parentFrame, fileSeed.getName(), false);
-        this.fileSeed = fileSeed;
+    public DetailFileSeedFrame(JFrame parentFrame, int index){
+        super(parentFrame, "", false);
+        this.fileSeed = MyComputer.getInstance().getSharedList().getElementAt(index);
         this.parentFrame = parentFrame;
         initLayout();
         addListener();
@@ -39,9 +40,9 @@ public class DetailFileSeedFrame extends JDialog implements ActionListener {
 
     private void initLayout(){
         downloadBtn = new JButton("Download");
-        if(fileSeed.getStatus() == Constant.SHARING || fileSeed.getStatus() == Constant.DOWNLOADING){
-            downloadBtn.setEnabled(false);
-        }
+//        if(fileSeed.getStatus() == Constant.SHARING || fileSeed.getStatus() == Constant.DOWNLOADING){
+//            downloadBtn.setEnabled(false);
+//        }
         this.setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -74,6 +75,7 @@ public class DetailFileSeedFrame extends JDialog implements ActionListener {
 
 
     private void initFrame(){
+        this.setTitle(this.fileSeed.getName());
         this.setModal(true);
         this.setResizable(false);
         this.setSize(WIDTH_FRAME, HEIGHT_FRAME);
@@ -137,7 +139,7 @@ public class DetailFileSeedFrame extends JDialog implements ActionListener {
                     if(listCom.size() == 0){
                         JOptionPane.showMessageDialog(this.parentFrame, "You need to select at least one computer to download the file");
                     }else{
-                        //download and pass list com
+                        MyComputer.getInstance().addNewDownloadTask(this.fileSeed.getMd5());
                         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
                     }
                 }

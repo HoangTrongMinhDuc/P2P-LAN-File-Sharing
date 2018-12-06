@@ -37,8 +37,6 @@ public class FileSeed extends FileShare {
     }
 
     public void addComputer(Computer computer){
-        for(int i = 0; i < this.listComputer.size(); i++){
-
-        }
+        this.listComputer.add(computer);
     }
 }

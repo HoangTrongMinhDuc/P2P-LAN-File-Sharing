@@ -6,7 +6,6 @@ import GUI.CustomComponent.FileList;
 import GUI.Tab.SharingTab;
 import Model.Computer;
 import Model.FileSeed;
-import mdlaf.shadows.DropShadowBorder;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -130,7 +129,6 @@ public class MainFrame extends JFrame implements ActionListener {
             System.out.println("Left panel: " + e.getMessage());
         }
         JPanel btnPanel = new JPanel();
-        btnPanel.setBorder(new DropShadowBorder(Color.RED, 5,5));
         btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
         btnAddComputer = new JButton("Add");
         btnPanel.add(btnAddComputer);
@@ -197,9 +195,10 @@ public class MainFrame extends JFrame implements ActionListener {
         listFileSeed.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(listFileSeed.getModel().getSize() == 0)  return;
                 super.mouseClicked(e);
                 int index = listFileSeed.locationToIndex(e.getPoint());
-                openFileDetail(MyComputer.getInstance().getSharedList().getElementAt(index));
+                openFileDetail(index);
             }
         });
     }
@@ -218,9 +217,9 @@ public class MainFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void openFileDetail(FileSeed fileSeed){
+    private void openFileDetail(int index){
         System.out.println("open detail");
-        new DetailFileSeedFrame(this, fileSeed);
+        new DetailFileSeedFrame(this, index);
     }
     public void updateList(DefaultListModel<Computer> model){
         if(model != null){

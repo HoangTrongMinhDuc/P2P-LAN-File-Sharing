@@ -6,6 +6,7 @@ import util.LocalSetting;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -63,10 +64,11 @@ public class PackageController {
     public void receiverUdp(){
         try{
             while (true){
-                DatagramPacket incoming = new DatagramPacket(BUFFER, BUFFER.length);
+                byte[] datagram = new byte[5120];
+                DatagramPacket incoming = new DatagramPacket(datagram, datagram.length);
                 datagramSocket.receive(incoming);
                 String message = new String(incoming.getData(), incoming.getOffset(), incoming.getLength());
-                System.out.println("Received: " + message + "|" + incoming.getAddress().getHostAddress() + ":" + incoming.getPort());
+//                System.out.println(message.length()+ " Received: " + message + "|" + incoming.getAddress().getHostAddress() + ":" + incoming.getPort());
                 this.queueReceivePacket.add(incoming);
             }
 
@@ -111,6 +113,16 @@ public class PackageController {
             System.out.println("SE " + e.getMessage());
         }
     }
+    public void sendDownloadRequest(String ip, int port, ArrayList<Integer> listIndex){
+
+    }
+
+    public void sendDownloadRangeRequest(String ip, int port, String md5File, int startIndex, int endIndex){
+        String mes = "{\"type\":"+Constant.REQUEST_DOWNLOAD_FILE+",\"typeRes\":"+Constant.REQUEST_DOWNLOAD_RANGE+
+                ",\"md5File\":\""+md5File+"\",\"partStart\":"+startIndex+",\"partEnd\":"+endIndex+"}";
+        sendUdpMesTo(ip, port, mes);
+    }
+
 
     public void sendUdpMesTo(String ip, int port, String mes){
         try{

@@ -4,6 +4,7 @@ import GUI.Frame.MainFrame;
 import Model.Computer;
 import Model.FileSeed;
 import Model.FileShare;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.apache.commons.net.ntp.TimeStamp;
 import util.Constant;
 import util.FileSharedHolder;
@@ -20,6 +21,8 @@ public class MyComputer extends Computer {
     volatile public DefaultListModel<Computer> listConnected = new DefaultListModel<>();
     volatile private DefaultListModel<FileShare> sharingList = new DefaultListModel<>();
     private DefaultListModel<FileSeed> sharedList = new DefaultListModel<>();
+    private DefaultListModel<DownloadController> listDownloading = new DefaultListModel<>();
+//    private HashMap<>
     private static MyComputer instance = new MyComputer();
     public static MyComputer getInstance(){return instance;}
     private MyComputer(){
@@ -40,7 +43,7 @@ public class MyComputer extends Computer {
             public void run() {
                 try {
                     while(true){
-                        refreshList();
+                        refreshComputerList();
                         updateSharedList();
                         Thread.sleep(1000);
                     }
@@ -110,8 +113,31 @@ public class MyComputer extends Computer {
 
     }
 
-    private void refreshList(){
-        System.out.println("test");
+    public void addNewDownloadTask(String md5){
+        FileSeed fileSeed = null;
+        for(int i = 0; i < this.sharedList.size(); i++){
+            if(this.sharedList.get(i).getMd5().equals(md5)){
+                fileSeed = this.sharedList.get(i);
+                this.sharedList.get(i).setStatus(Constant.DOWNLOADING);
+            }
+        }
+        if(fileSeed != null){
+            DownloadController downloadController = new DownloadController(fileSeed);
+            downloadController.start();
+            this.listDownloading.addElement(downloadController);
+        }
+    }
+
+    public DownloadController getDownloadControllerBy(String md5File){
+        for(int i = 0; i < this.listDownloading.size(); i++){
+            if(this.listDownloading.get(i).getFileDownload().getMd5().toLowerCase().equals(md5File)){
+                return this.listDownloading.get(i);
+            }
+        }
+        return null;
+    }
+
+    private void refreshComputerList(){
         for(int i = 0; i < this.listConnected.size(); i++){
             Computer computer = this.listConnected.get(i).clone();
             this.listConnected.set(i, computer);
@@ -179,7 +205,7 @@ public class MyComputer extends Computer {
                         ArrayList<Computer> computers = new ArrayList<>();
                         computers.add(this.listConnected.get(i));
                         FileShare f = this.listConnected.get(i).getListFileShare().get(fileKey);
-                        FileSeed seed = new FileSeed(f.getName(), f.getMd5(), f.getSize(), f.getPath(), computers, 4);
+                        FileSeed seed = new FileSeed(f.getName(), f.getMd5(), f.getSize(), f.getPath(), computers, Constant.SHARED);
                         listFile.put(fileKey, seed);
                     }else {
                         //if recorded then add this computer to list share the file seed
@@ -188,12 +214,35 @@ public class MyComputer extends Computer {
                 }
             }
         }
+        for(int i = 0; i < this.sharingList.size(); i++){
+            FileShare fileShare = this.sharingList.get(i);
+            if(listFile.containsKey(fileShare.getMd5())){
+                listFile.get(fileShare.getMd5()).setStatus(Constant.SHARING);
+            }
+//            else{
+//                FileSeed fileSeed = new FileSeed();
+//                fileSeed.setName(fileShare.getName());
+//                fileSeed.setSize(fileShare.getSize());
+//                fileSeed.setMd5(fileShare.getMd5());
+//                fileSeed.addComputer(this);
+//                fileSeed.setStatus(Constant.SHARING);
+//                listFile.put(fileShare.getMd5(), fileSeed);
+//            }
+        }
+
+        for (int i = 0; i < this.listDownloading.size(); i++){
+            if(this.listDownloading.get(i).isAlive()){
+                FileShare fileShare = this.listDownloading.get(i).getFileDownload();
+                if(listFile.containsKey(fileShare.getMd5())){
+                    listFile.get(fileShare.getMd5()).setStatus(Constant.DOWNLOADING);
+                }
+            }
+        }
         this.sharedList.clear();
         DefaultListModel<FileSeed> tempList = new DefaultListModel<>();
         for (FileSeed fileSeed : listFile.values()){
             Helper.insertElement(this.sharedList, fileSeed);
         }
-        System.out.println("SHARED " + this.sharedList.size());
     }
 
     public void removeFileSharing(int i){
@@ -201,24 +250,32 @@ public class MyComputer extends Computer {
         FileSharedHolder.getInstance().writeHolder();
     }
 
-    public TimeStamp getTimeStamp() {
-        return timeStamp;
+    public FileShare getFileShareBy(String md5){
+        for(int i = 0; i < this.sharingList.size(); i++){
+            if(this.sharingList.get(i).getMd5().equals(md5))
+                return this.sharingList.get(i);
+        }
+        return null;
     }
 
-    public void setTimeStamp(TimeStamp timeStamp) {
-        this.timeStamp = timeStamp;
+    public FileSeed getFileSeedBy(String md5){
+        for(int i = 0; i < this.sharedList.size(); i++){
+            if(this.sharedList.get(i).getMd5().equals(md5))
+                return this.sharedList.get(i);
+        }
+        return null;
     }
 
     public DefaultListModel<FileShare> getSharingList() {
         return sharingList;
     }
 
-    public void setSharingList(DefaultListModel<FileShare> sharingList) {
-        this.sharingList = sharingList;
-    }
-
     public DefaultListModel<FileSeed> getSharedList() {
         return sharedList;
+    }
+
+    public DefaultListModel<DownloadController> getListDownloading() {
+        return listDownloading;
     }
 
     public int getSubnetMask() {
