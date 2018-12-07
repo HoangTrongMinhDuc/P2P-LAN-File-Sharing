@@ -3,6 +3,7 @@ package GUI.Frame;
 import Controller.MyComputer;
 import GUI.CustomComponent.ComputerList;
 import GUI.CustomComponent.FileList;
+import GUI.Tab.DownloadingTab;
 import GUI.Tab.SharingTab;
 import Model.Computer;
 import Model.FileSeed;
@@ -178,8 +179,9 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void initSecTab(){
-        JPanel downloadPanel = new JPanel();
-        tabbedPane.addTab("Downloading",null,downloadPanel, "Your files downloading");
+        DownloadingTab downloadingTab = new DownloadingTab();
+        tabbedPane.addTab("Downloading",null,downloadingTab, "Your files downloading");
+        MyComputer.getInstance().setJListDownloading(downloadingTab.getList());
     }
 
     private void iniThirdTab(){

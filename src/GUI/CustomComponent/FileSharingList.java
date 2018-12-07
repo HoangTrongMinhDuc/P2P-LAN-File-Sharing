@@ -33,12 +33,14 @@ public class FileSharingList extends JPanel implements ListCellRenderer<FileShar
         namePanel.setMaximumSize(dimension);
         namePanel.setMinimumSize(dimension);
         lbName = new JLabel();
-        lbName.setMaximumSize(new Dimension(200, 50));
+        lbName.setMaximumSize(new Dimension(200, 25));
         lbName.setMinimumSize(lbName.getMaximumSize());
+        lbName.setPreferredSize(lbName.getMaximumSize());
         namePanel.add(lbName);
         lbPath = new JLabel();
-        lbPath.setMaximumSize(new Dimension(350, 50));
+        lbPath.setMaximumSize(new Dimension(350, 25));
         lbPath.setMinimumSize(lbPath.getMaximumSize());
+        lbPath.setPreferredSize(lbPath.getMaximumSize());
         namePanel.add(lbPath);
 
         wrapper.add(namePanel);
@@ -53,9 +55,15 @@ public class FileSharingList extends JPanel implements ListCellRenderer<FileShar
         lbMd5.setMinimumSize(lbMd5.getMaximumSize());
         wrapper.add(lbMd5);
         wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
+
         lbDel = new JLabel();
         lbDel.setIcon(new ImageIcon(new ImageIcon(Constant.REMOVE_ICON).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        lbDel.setMinimumSize(new Dimension(25, 50));
+        lbDel.setMaximumSize(lbDel.getMinimumSize());
+        lbDel.setPreferredSize(lbDel.getMaximumSize());
         wrapper.add(lbDel);
+
+
 
         wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
         wrapper.setBackground(Color.WHITE);
@@ -67,18 +75,12 @@ public class FileSharingList extends JPanel implements ListCellRenderer<FileShar
         line.setMaximumSize(line.getPreferredSize());
         this.add(line);
         this.setBackground(Color.WHITE);
-        lbDel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("sfg");
-            }
-        });
     }
 
     @Override
     public Component getListCellRendererComponent(JList<? extends FileShare> list, FileShare value, int index, boolean isSelected, boolean cellHasFocus) {
         lbName.setText(value.getName());
-        lbSize.setText(value.getMegaSize() + "MB");
+        lbSize.setText(value.getMegaSize() + " MB");
         lbMd5.setText(value.getMd5().toUpperCase());
         lbPath.setText(value.getPath());
 //        if(isSelected){

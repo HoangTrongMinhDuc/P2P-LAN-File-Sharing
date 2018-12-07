@@ -22,7 +22,7 @@ public class MyComputer extends Computer {
     volatile private DefaultListModel<FileShare> sharingList = new DefaultListModel<>();
     private DefaultListModel<FileSeed> sharedList = new DefaultListModel<>();
     private DefaultListModel<DownloadController> listDownloading = new DefaultListModel<>();
-//    private HashMap<>
+    private JList jList;
     private static MyComputer instance = new MyComputer();
     public static MyComputer getInstance(){return instance;}
     private MyComputer(){
@@ -42,10 +42,18 @@ public class MyComputer extends Computer {
             @Override
             public void run() {
                 try {
+                    int count  = 0;
                     while(true){
-                        refreshComputerList();
-                        updateSharedList();
-                        Thread.sleep(1000);
+                        if(count % 2 == 1 && jList != null){
+                            jList.updateUI();
+                        }
+                        if(count == 9){
+                            refreshComputerList();
+                            updateSharedList();
+                            count = 0;
+                        }
+                        Thread.sleep(100);
+                        ++count;
                     }
                 } catch (Exception e) {
                     System.out.println("Refresh: " + e.getMessage());
@@ -284,5 +292,9 @@ public class MyComputer extends Computer {
 
     public void setSubnetMask(int subnetMask) {
         this.subnetMask = subnetMask;
+    }
+
+    public void setJListDownloading(JList jList){
+        this.jList = jList;
     }
 }

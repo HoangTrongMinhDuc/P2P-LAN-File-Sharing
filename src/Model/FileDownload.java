@@ -7,6 +7,15 @@ public class FileDownload extends FileShare {
     private int downloadedSize = 0;
     private int totalPart;
     private int endPartSize;
+    private int status;
+
+    public FileDownload(String name, String md5, int size, String path){
+        this.name = name;
+        this.md5 = md5;
+        this.size = size;
+        this.path = path;
+        status = Constant.DOWNLOADING;
+    }
 
 
     public FileDownload(FileShare fileShare){
@@ -33,5 +42,13 @@ public class FileDownload extends FileShare {
 
     public void addDownloadedSize(int size){
         downloadedSize += size;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

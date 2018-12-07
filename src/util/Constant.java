@@ -5,7 +5,7 @@ public class Constant {
     public static final int ONLINE = 1;
     public static final int PENDING = 2;
     public static final int ALIVE = 3;
-    public static final int NORMAL = 4;
+    public static final int PAUSED = 4;
     public static final int DOWNLOADED = 5;
     public static final int DOWNLOADING = 6;
     public static final int HELLO_MES = 7;
@@ -30,4 +30,7 @@ public class Constant {
     public static final String DOWNLOAD_ICON = "src/res/down-icon.png";
     public static final String SHARING_ICON = "src/res/sharing.png";
     public static final String SHARED_ICON = "src/res/shared.png";
+    public static final String PAUSE_ICON = "src/res/pause.png";
+    public static final String PLAY_ICON = "src/res/play.png";
+    public static final String DONE_ICON = "src/res/done.png";
 }

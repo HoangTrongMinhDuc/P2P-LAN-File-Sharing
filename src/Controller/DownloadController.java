@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.zip.Adler32;
+import java.util.zip.Checksum;
 
 public class DownloadController extends Thread {
     private FileDownload fileDownload;
@@ -67,10 +69,12 @@ public class DownloadController extends Thread {
             for(int i = 0; i < dataJson.size(); i++){
                 data[i] = (byte)dataJson.get(i).getAsInt();
             }
+            Checksum checker = new Adler32();
             System.out.println("wr");
-            String md5Check = jsonObject.get("md5").getAsString();
+            ((Adler32) checker).update(data);
+            long checksum = jsonObject.get("checksum").getAsLong();
             int indexPart = jsonObject.get("indexPart").getAsInt();
-            if(DigestUtils.md5Hex(data).equals(md5Check)){
+            if(checker.getValue() == checksum){
                 System.out.println("+++++++");
                 addPartToFile(indexPart, data);
             }
@@ -99,6 +103,7 @@ public class DownloadController extends Thread {
                 this.fileDownload.addDownloadedSize(data.length);
                 if(this.listIndex.isEmpty()){
                     this.isEndTask = true;
+                    this.fileDownload.setStatus(Constant.DOWNLOADED);
                     System.out.println("write done");
                     randomAccessFile.close();
                 }

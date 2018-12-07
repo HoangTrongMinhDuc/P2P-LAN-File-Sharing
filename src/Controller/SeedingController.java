@@ -8,6 +8,8 @@ import util.Constant;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.zip.Adler32;
+import java.util.zip.Checksum;
 
 public class SeedingController extends Thread {
     private Computer computer;
@@ -75,8 +77,10 @@ public class SeedingController extends Thread {
                     jsonData += ",";
             }
             jsonData += "]";
-            String res = "{\"type\":" + Constant.DATA_MES + ",\"md5File\":\"" + fileShare.getMd5() + "\",\"indexPart\":" + index  +",\"md5\":\""
-                    + DigestUtils.md5Hex(data) + "\",\"data\":" + jsonData + "}";
+            Checksum checker = new Adler32();
+            ((Adler32) checker).update(data);
+            String res = "{\"type\":" + Constant.DATA_MES + ",\"md5File\":\"" + fileShare.getMd5() + "\",\"indexPart\":" + index  +",\"checksum\":\""
+                    + checker.getValue() + "\",\"data\":" + jsonData + "}";
             PackageController.getInstance().sendUdpMesTo(this.computer.getIp(), this.computer.getPort(), res);
             Thread.sleep(1);
         }catch (Exception e){

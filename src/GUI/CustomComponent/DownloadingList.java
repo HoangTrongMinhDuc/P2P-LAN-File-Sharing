@@ -2,6 +2,7 @@ package GUI.CustomComponent;
 
 import Controller.DownloadController;
 import GUI.Tab.DownloadingTab;
+import Model.FileDownload;
 import Model.FileSeed;
 import util.Constant;
 
@@ -12,7 +13,7 @@ import java.awt.event.MouseEvent;
 
 public class DownloadingList  extends JPanel implements ListCellRenderer<DownloadController> {
     private JLabel lbName;
-    private JLabel lbPath;
+    private JProgressBar progressBar;
     private JLabel lbSize;
     private JLabel lbMd5;
     private JLabel lbDel;
@@ -24,20 +25,24 @@ public class DownloadingList  extends JPanel implements ListCellRenderer<Downloa
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
         wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        Dimension dimension = new Dimension(150, 50);
+        Dimension dimension = new Dimension(350, 50);
         JPanel namePanel = new JPanel();
         namePanel.setBackground(Color.WHITE);
         namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.Y_AXIS));
         namePanel.setMaximumSize(dimension);
         namePanel.setMinimumSize(dimension);
+        namePanel.setPreferredSize(dimension);
         lbName = new JLabel();
-        lbName.setMaximumSize(new Dimension(200, 50));
+        lbName.setMaximumSize(new Dimension(200, 25));
         lbName.setMinimumSize(lbName.getMaximumSize());
+        lbName.setPreferredSize(lbName.getMaximumSize());
+        lbName.setAlignmentX(JLabel.LEFT);
         namePanel.add(lbName);
-        lbPath = new JLabel();
-        lbPath.setMaximumSize(new Dimension(350, 50));
-        lbPath.setMinimumSize(lbPath.getMaximumSize());
-        namePanel.add(lbPath);
+        progressBar = new JProgressBar();
+        progressBar.setMaximumSize(new Dimension(350, 10));
+        progressBar.setMinimumSize(progressBar.getMaximumSize());
+        progressBar.setPreferredSize(progressBar.getMaximumSize());
+        namePanel.add(progressBar);
 
         wrapper.add(namePanel);
 
@@ -51,9 +56,16 @@ public class DownloadingList  extends JPanel implements ListCellRenderer<Downloa
         lbMd5.setMinimumSize(lbMd5.getMaximumSize());
         wrapper.add(lbMd5);
         wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
+
         lbDel = new JLabel();
-        lbDel.setIcon(new ImageIcon(new ImageIcon(Constant.REMOVE_ICON).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        lbDel.setIcon(new ImageIcon(new ImageIcon(Constant.PAUSE_ICON).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        lbDel.setMinimumSize(new Dimension(25, 50));
+        lbDel.setMaximumSize(lbDel.getMinimumSize());
+        lbDel.setPreferredSize(lbDel.getMaximumSize());
         wrapper.add(lbDel);
+
+
+
         wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
         wrapper.setBackground(Color.WHITE);
         this.add(wrapper);
@@ -68,7 +80,30 @@ public class DownloadingList  extends JPanel implements ListCellRenderer<Downloa
 
     @Override
     public Component getListCellRendererComponent(JList<? extends DownloadController> list, DownloadController value, int index, boolean isSelected, boolean cellHasFocus) {
-
+        FileDownload fileDownload = value.getFileDownload();
+        this.lbName.setText(fileDownload.getName());
+        this.lbSize.setText((fileDownload.getDownloadedSize()*100/fileDownload.getSize()) + "% / " + fileDownload.getMegaSize() + " MB");
+        this.lbMd5.setText(fileDownload.getMd5());
+        this.progressBar.setValue(fileDownload.getDownloadedSize()*100/fileDownload.getSize());
+        String src = Constant.PAUSE_ICON;
+        switch (fileDownload.getStatus()){
+            case Constant.DOWNLOADING:
+            {
+                src = Constant.PAUSE_ICON;
+                break;
+            }
+            case Constant.DOWNLOADED:
+            {
+                src = Constant.DONE_ICON;
+                break;
+            }
+            case Constant.PAUSED:
+            {
+                src = Constant.PLAY_ICON;
+                break;
+            }
+        }
+        lbDel.setIcon(new ImageIcon(new ImageIcon(src).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         return this;
     }
 }

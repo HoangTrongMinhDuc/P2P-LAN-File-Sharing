@@ -56,12 +56,12 @@ public class ComputerList extends JPanel implements ListCellRenderer<Computer> {
         lbStatus.setIcon(new ImageIcon(src));
         this.lbComputerName.setText(value.getName());
         this.lbComputerAddress.setText(value.getIp() + ":" + value.getPort());
-        if(isSelected){
-            this.setBackground(new Color(255, 231, 217));
-            this.comPanel.setBackground(new Color(255, 231, 217));
-        }else {
-            this.setBackground(Color.WHITE);
-        }
+//        if(isSelected){
+//            this.setBackground(new Color(255, 231, 217));
+//            this.comPanel.setBackground(new Color(255, 231, 217));
+//        }else {
+//            this.setBackground(Color.WHITE);
+//        }
         return this;
     }
 }
