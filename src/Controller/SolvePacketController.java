@@ -60,6 +60,11 @@ public class SolvePacketController {
                     jsonElement = parser.parse(message);
 
                 }catch (Exception e){
+                    //check if this packet is data
+                    byte[] dat = received.getData();
+                    if(dat[0] == 1 && dat[1] == 9){
+                        
+                    }
                     System.out.println("Packet error: " + message);
                 }
                 if(jsonElement != null && jsonElement.isJsonObject()){
