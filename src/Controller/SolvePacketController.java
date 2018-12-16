@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Computer;
+import Model.DataPack;
 import Model.FileShare;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,16 +11,20 @@ import org.apache.commons.codec.digest.DigestUtils;
 import util.Constant;
 import util.Helper;
 
+import javax.xml.crypto.Data;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class SolvePacketController {
     JsonParser parser = new JsonParser();
     private HashMap<String, ArrayList<SeedingController>> listSeeding = new HashMap<>();
     Queue<JsonObject> listDataObject = new LinkedList<>();
+    volatile BlockingQueue<DataPack> listData = new LinkedBlockingDeque<>();
     private static SolvePacketController ourInstance = new SolvePacketController();
     public static SolvePacketController getInstance() {
         return ourInstance;
@@ -42,7 +47,7 @@ public class SolvePacketController {
         dataThread.start();
     }
 
-
+    int c = 0;
     private void SolveUdpPacket(){
         while(true){
             cleanSeedList();
@@ -54,44 +59,44 @@ public class SolvePacketController {
             String ip = received.getAddress().getHostAddress();
             int port = received.getPort();
             if(received != null){
-                String message = new String(received.getData(), received.getOffset(), received.getLength());
-                JsonElement jsonElement = null;
-                try {
-                    jsonElement = parser.parse(message);
-
-                }catch (Exception e){
-                    //check if this packet is data
-                    byte[] dat = received.getData();
-                    if(dat[0] == 1 && dat[1] == 9){
-                        
-                    }
-                    System.out.println("Packet error: " + message);
-                }
-                if(jsonElement != null && jsonElement.isJsonObject()){
-                    JsonObject jsonObject = jsonElement.getAsJsonObject();
-                    //check type packet
-                    switch (jsonObject.get("type").getAsInt()){
-                        case Constant.HELLO_MES:
-                        {
-                            solveHelloPacket(ip, port, jsonObject);
-                            break;
-                        }
-                        case Constant.DATA_MES:
-                        {
-                            this.listDataObject.add(jsonObject);
+                byte[] dat = received.getData();
+                if(dat[0] == 8 && dat[1] == 2 && dat[2] == 0){
+                    this.listData.add(new DataPack(dat, received.getLength()));
+                    System.out.println("data in" + dat[38]+"|"+received.getLength());
+                }else{
+                    String message = new String(received.getData(), received.getOffset(), received.getLength());
+                    JsonElement jsonElement = null;
+                    try {
+                        jsonElement = parser.parse(message);
+                        if(jsonElement != null && jsonElement.isJsonObject()){
+                            JsonObject jsonObject = jsonElement.getAsJsonObject();
+                            //check type packet
+                            switch (jsonObject.get("type").getAsInt()){
+                                case Constant.HELLO_MES:
+                                {
+                                    solveHelloPacket(ip, port, jsonObject);
+                                    break;
+                                }
+                                case Constant.DATA_MES:
+                                {
+                                    this.listDataObject.add(jsonObject);
 //                            solveDataPacket(ip, port, jsonObject);
-                            break;
+                                    break;
+                                }
+                                case Constant.CONTROL_MES:
+                                {
+                                    solveControlPacket(ip, port, jsonObject);
+                                    break;
+                                }
+                                case Constant.REQUEST_DOWNLOAD_FILE:
+                                {
+                                    solveRequestData(ip, port, jsonObject);
+                                    break;
+                                }
+                            }
                         }
-                        case Constant.CONTROL_MES:
-                        {
-                            solveControlPacket(ip, port, jsonObject);
-                            break;
-                        }
-                        case Constant.REQUEST_DOWNLOAD_FILE:
-                        {
-                            solveRequestData(ip, port, jsonObject);
-                            break;
-                        }
+                    }catch (Exception e){
+                        System.out.println("Packet json error: " + message);
                     }
                 }
             }
@@ -117,13 +122,20 @@ public class SolvePacketController {
 
     private void dataRoute(){
         while (true){
-            if(this.listDataObject.size() == 0) continue;
-            JsonObject jsonObject = this.listDataObject.poll();
-            String md5File = jsonObject.get("md5File").getAsString();
-            System.out.println("routed");
-            DownloadController downloadController = MyComputer.getInstance().getDownloadControllerBy(md5File);
-            if(downloadController != null && downloadController.isAlive()){
-                downloadController.addDataPartToQueue(jsonObject);
+            try{
+                DataPack dataPack = this.listData.poll();
+                if(dataPack==null) continue;
+                byte[] data = dataPack.getData();
+                String md5File = new String(data, 5, 32);
+                DownloadController downloadController = MyComputer.getInstance().getDownloadControllerBy(md5File);
+                System.out.println("routing");
+                if(downloadController != null && downloadController.isAlive()){
+                    downloadController.addDataPartToQueue(dataPack);
+                    System.out.println("added");
+                }else
+                    System.out.println("downloading null");
+            }catch (Exception e){
+                System.out.println("Route err: " + e.getMessage());
             }
         }
     }

@@ -5,12 +5,12 @@ import util.Helper;
 public class FileShare {
     protected String name;
     protected String md5;
-    protected int size;
+    protected long size;
     protected String path;
 
     public FileShare(){}
 
-    public FileShare(String name, String md5, int size, String path){
+    public FileShare(String name, String md5, long size, String path){
         this.name = name;
         this.md5 = md5;
         this.size = size;
@@ -33,11 +33,11 @@ public class FileShare {
         this.md5 = md5;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(long size) {
         this.size = size;
     }
 

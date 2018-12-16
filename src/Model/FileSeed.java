@@ -14,7 +14,7 @@ public class FileSeed extends FileShare {
         this.status = status;
     }
 
-    public FileSeed(String name, String md5, int size, String path, ArrayList<Computer> listComputer, int status) {
+    public FileSeed(String name, String md5, long size, String path, ArrayList<Computer> listComputer, int status) {
         super(name, md5, size, path);
         this.listComputer = listComputer;
         this.status = status;

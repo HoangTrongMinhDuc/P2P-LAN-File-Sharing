@@ -18,7 +18,7 @@ public class PackageController {
 
     private static PackageController instance = new PackageController();
     public static PackageController getInstance(){return instance;}
-
+    volatile private boolean switchThread = true;
     private PackageController(){
         try{
                 datagramSocket = new DatagramSocket(LocalSetting.getInstance().getPort());
@@ -64,20 +64,15 @@ public class PackageController {
     public void receiverUdp(){
         try{
             while (true){
-                byte[] datagram = new byte[5120];
-                DatagramPacket incoming = new DatagramPacket(datagram, datagram.length);
-                datagramSocket.receive(incoming);
-                String message = new String(incoming.getData(), incoming.getOffset(), incoming.getLength());
-//                System.out.println(message.length()+ " Received: " + message + "|" + incoming.getAddress().getHostAddress() + ":" + incoming.getPort());
-                this.queueReceivePacket.add(incoming);
+                    byte[] datagram = new byte[Constant.PART_SIZE+1024];
+                    DatagramPacket incoming = new DatagramPacket(datagram, datagram.length);
+                    datagramSocket.receive(incoming);
+                    this.queueReceivePacket.add(incoming);
             }
-
         }catch (Exception e){
             System.out.println("REC " + e.getMessage());
         }
     }
-
-
 
     public void receiverTcp(){
         try{
@@ -113,8 +108,16 @@ public class PackageController {
             System.out.println("SE " + e.getMessage());
         }
     }
-    public void sendDownloadRequest(String ip, int port, ArrayList<Integer> listIndex){
-
+    public void sendDownloadRequest(String ip, int port, String md5File, ArrayList<Integer> listIndex){
+        String mes = "{\"type\":"+Constant.REQUEST_DOWNLOAD_FILE+",\"typeRes\":"+Constant.REQUEST_DOWNLOAD_PARTS+
+                ",\"md5File\":\""+md5File+"\",\"parts\":[";
+        for(int i = 0; i < listIndex.size(); i++){
+            mes += listIndex.get(i).toString();
+            if(i != listIndex.size()-1)
+                mes += ",";
+        }
+        mes += "]}";
+        sendUdpMesTo(ip, port, mes);
     }
 
     public void sendDownloadRangeRequest(String ip, int port, String md5File, int startIndex, int endIndex){
@@ -130,6 +133,15 @@ public class PackageController {
             datagramSocket.send(datagramPacket);
         }catch (Exception e){
             System.out.println("Send UDP: " + e.getMessage());
+        }
+    }
+
+    public void sendDataUdpMesTo(String ip, int port, byte[] data){
+        try{
+            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ip), port);
+            datagramSocket.send(datagramPacket);
+        }catch (Exception e){
+            System.out.println("Send data UDP: " + e.getMessage());
         }
     }
 

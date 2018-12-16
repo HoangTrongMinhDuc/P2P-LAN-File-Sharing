@@ -31,6 +31,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton btnAddComputer;
     private JButton btnRefresh;
     private JButton btnSetting;
+    private DownloadingTab downloadingTab;
     private  DefaultListModel<Computer> models;
     volatile private JList<Computer> listComputer;
     private JList<FileSeed> listFileSeed;
@@ -71,39 +72,6 @@ public class MainFrame extends JFrame implements ActionListener {
         try {
             JScrollPane scrollPane = new JScrollPane();
             scrollPane.setPreferredSize(new Dimension(leftPanel.getWidth(), leftPanel.getHeight() * 8 / 10));
-//            this.models = new DefaultListModel<>();
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
-//            models.addElement(new Computer("Hello", "Its me", 6969, 0, 1, null));
             listComputer = new JList<Computer>(models);
             listComputer.setCellRenderer(new ComputerList());
             listComputer.setVisibleRowCount(10);
@@ -179,7 +147,7 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void initSecTab(){
-        DownloadingTab downloadingTab = new DownloadingTab();
+        downloadingTab = new DownloadingTab();
         tabbedPane.addTab("Downloading",null,downloadingTab, "Your files downloading");
         MyComputer.getInstance().setJListDownloading(downloadingTab.getList());
     }
@@ -259,8 +227,9 @@ public class MainFrame extends JFrame implements ActionListener {
         return this.listComputer;
     }
 
-    public void addNewCom(Computer computer){
-        this.models.addElement(computer);
+    public void updateDownloadingUI(){
+        if(this.downloadingTab != null){
+            this.downloadingTab.updateListUI();
+        }
     }
-//    public static void setList()
 }

@@ -91,8 +91,9 @@ public class SharingTab extends JPanel {
         try{
             String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(new FileInputStream(file));
             FileShare fileShare = new FileShare(file.getName(), md5, (int)file.length(), file.getPath());
-            this.model.addElement(fileShare);
+            MyComputer.getInstance().addNewSharingFile(fileShare);
             FileSharedHolder.getInstance().writeHolder();
+            this.updateUI();
         }catch (Exception e){
             System.out.println("Error add share: " + e.getMessage());
         }

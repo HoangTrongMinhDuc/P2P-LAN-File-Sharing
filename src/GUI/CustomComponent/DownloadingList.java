@@ -82,9 +82,10 @@ public class DownloadingList  extends JPanel implements ListCellRenderer<Downloa
     public Component getListCellRendererComponent(JList<? extends DownloadController> list, DownloadController value, int index, boolean isSelected, boolean cellHasFocus) {
         FileDownload fileDownload = value.getFileDownload();
         this.lbName.setText(fileDownload.getName());
-        this.lbSize.setText((fileDownload.getDownloadedSize()*100/fileDownload.getSize()) + "% / " + fileDownload.getMegaSize() + " MB");
-        this.lbMd5.setText(fileDownload.getMd5());
-        this.progressBar.setValue(fileDownload.getDownloadedSize()*100/fileDownload.getSize());
+        long percent = (fileDownload.getDownloadedSize()*100/fileDownload.getSize());
+        this.lbSize.setText((percent) + "% / " + fileDownload.getMegaSize() + " MB / " + fileDownload.getSpeed() + " MB/s");
+//        this.lbMd5.setText(fileDownload.getMd5());
+        this.progressBar.setValue((int)percent);
         String src = Constant.PAUSE_ICON;
         switch (fileDownload.getStatus()){
             case Constant.DOWNLOADING:

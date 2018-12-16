@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import javax.swing.*;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
 public class Helper {
@@ -59,7 +60,7 @@ public class Helper {
     public static String getStatus(int id){
         switch (id){
             case Constant.SHARING:
-                return "Shared";
+                return "Sharing";
             case Constant.SHARED:
                 return "Shared";
             case Constant.OFFLINE:
@@ -67,5 +68,32 @@ public class Helper {
             default:
                 return "";
         }
+    }
+
+    public static byte[] combineByteArray(byte[] type, byte[] md5File, byte[] indexPart, byte[] checksum, byte[] data){
+        byte[] makedBytes = {2, 0, 1, 8};
+        int size = type.length + 4 + md5File.length + 1 + indexPart.length + 1 + checksum.length + data.length;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+        byteBuffer.put(type);
+        byteBuffer.put(makedBytes);
+        byteBuffer.put(md5File);
+        byteBuffer.put((byte)(4 + md5File.length + 1 + indexPart.length));
+        byteBuffer.put(indexPart);
+        byteBuffer.put((byte)(4 + md5File.length + 1 + indexPart.length + 1 + checksum.length));
+        byteBuffer.put(checksum);
+        byteBuffer.put(data);
+        return byteBuffer.array();
+    }
+
+    public static byte[] convertNumber2Bytes(long number){
+        int lengthNumb = String.valueOf(number).length()/2;
+        if(String.valueOf(number).length()%2!=0)
+            ++lengthNumb;
+        byte[] bytes = new byte[lengthNumb];
+        for(int i = bytes.length-1; i >= 0; i--){
+            bytes[i] = (byte) (number % 100);
+            number /= 100;
+        }
+        return bytes;
     }
 }

@@ -6,6 +6,7 @@ import Model.FileSeed;
 import Model.FileShare;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.apache.commons.net.ntp.TimeStamp;
+import sun.applet.Main;
 import util.Constant;
 import util.FileSharedHolder;
 import util.Helper;
@@ -23,6 +24,7 @@ public class MyComputer extends Computer {
     private DefaultListModel<FileSeed> sharedList = new DefaultListModel<>();
     private DefaultListModel<DownloadController> listDownloading = new DefaultListModel<>();
     private JList jList;
+    private MainFrame mainFrame = null;
     private static MyComputer instance = new MyComputer();
     public static MyComputer getInstance(){return instance;}
     private MyComputer(){
@@ -44,14 +46,16 @@ public class MyComputer extends Computer {
                 try {
                     int count  = 0;
                     while(true){
-                        if(count % 2 == 1 && jList != null){
-                            jList.updateUI();
-                        }
+//                        if(count % 2 == 1 && jList != null){
+//                            jList.updateUI();
+//                        }
                         if(count == 9){
                             refreshComputerList();
                             updateSharedList();
                             count = 0;
                         }
+                        if(mainFrame != null)
+                            mainFrame.updateDownloadingUI();
                         Thread.sleep(100);
                         ++count;
                     }
@@ -64,8 +68,7 @@ public class MyComputer extends Computer {
     }
 
     public void start(){
-        new MainFrame(listConnected);
-
+        this.mainFrame = new MainFrame(listConnected);
     }
 
     public String getHelloWord(boolean replyReq){
@@ -264,6 +267,21 @@ public class MyComputer extends Computer {
                 return this.sharingList.get(i);
         }
         return null;
+    }
+
+    public void addNewSharingFile(FileShare fileShare){
+        boolean exist = false;
+        for(int i = 0; i < this.sharingList.size(); i++){
+            if(this.sharingList.get(i).getMd5().equals(fileShare.getMd5())){
+                this.sharingList.get(i).setPath(fileShare.getPath());
+                this.sharingList.get(i).setName(fileShare.getName());
+                exist = true;
+                break;
+            }
+        }
+        if(!exist){
+            this.sharingList.addElement(fileShare);
+        }
     }
 
     public FileSeed getFileSeedBy(String md5){
