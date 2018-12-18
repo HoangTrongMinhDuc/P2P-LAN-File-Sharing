@@ -139,7 +139,7 @@ public class DetailFileSeedFrame extends JDialog implements ActionListener {
                     if(listCom.size() == 0){
                         JOptionPane.showMessageDialog(this.parentFrame, "You need to select at least one computer to download the file");
                     }else{
-                        MyComputer.getInstance().addNewDownloadTask(this.fileSeed.getMd5());
+                        MyComputer.getInstance().addNewDownloadTask(this.fileSeed.getMd5(), listCom);
                         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
                     }
                 }
@@ -186,7 +186,7 @@ class TableDemo extends JPanel {
             for(int i = 0; i < this.list.size(); i++){
                 data[i][0] = (i+1)+"";
                 data[i][1] = this.list.get(i).getName();
-                data[i][2] = this.list.get(i).getIp();
+                data[i][2] = this.list.get(i).getIp() + ":" + this.list.get(i).getPort();
                 data[i][3] = new Boolean(true);
             }
         }

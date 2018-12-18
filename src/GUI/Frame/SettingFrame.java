@@ -1,6 +1,7 @@
 package GUI.Frame;
 
 import Controller.MyComputer;
+import Controller.PackageController;
 import util.LocalSetting;
 
 import javax.swing.*;
@@ -135,7 +136,12 @@ public class SettingFrame extends JDialog implements ActionListener {
 
         if(button == this.btnApply){
             LocalSetting.getInstance().setDownFolderPath(this.inTextPath.getText());
-            LocalSetting.getInstance().setPort(Integer.parseInt(this.inTextPort.getText()));
+            if(Integer.parseInt(this.inTextPort.getText())!=LocalSetting.getInstance().getPort()){
+                System.out.println("restart");
+                PackageController.getInstance().reStartSocket(Integer.parseInt(this.inTextPort.getText()));
+            }
+            LocalSetting.getInstance().setPort(Integer.parseInt(this.inTextPort.getText()), true);
+
             LocalSetting.getInstance().setEnaleSpread(this.checkSpread.isSelected());
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         }

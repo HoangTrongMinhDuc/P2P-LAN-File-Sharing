@@ -8,10 +8,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 public class NetworkScanner {
-    private String ipClient;
-    private int subnetMask;
-    private String[] allAddresses;
-    private int[] checkList;
+    private String ipClient = null;
+    private int subnetMask = 0;
+    private String[] allAddresses = {};
     public NetworkScanner(){
         getLocalAddress();
 //        Thread sendGreet = new Thread(new Runnable() {
@@ -43,9 +42,10 @@ public class NetworkScanner {
                     }
                 }
             }
-            SubnetUtils utils = new SubnetUtils(this.ipClient + "/" + this.subnetMask);
-            this.allAddresses = utils.getInfo().getAllAddresses();
-            this.checkList = new int[this.allAddresses.length];
+            if(this.ipClient != null && this.subnetMask != 0){
+                SubnetUtils utils = new SubnetUtils(this.ipClient + "/" + this.subnetMask);
+                this.allAddresses = utils.getInfo().getAllAddresses();
+            }
         }catch (Exception e){
             System.out.println("Get local address: " + e.getMessage());
         }

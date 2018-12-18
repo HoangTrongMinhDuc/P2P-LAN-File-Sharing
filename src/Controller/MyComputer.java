@@ -10,10 +10,12 @@ import sun.applet.Main;
 import util.Constant;
 import util.FileSharedHolder;
 import util.Helper;
+import util.LocalSetting;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class MyComputer extends Computer {
@@ -45,6 +47,7 @@ public class MyComputer extends Computer {
             public void run() {
                 try {
                     int count  = 0;
+                    int count2 = 0;
                     while(true){
 //                        if(count % 2 == 1 && jList != null){
 //                            jList.updateUI();
@@ -56,14 +59,21 @@ public class MyComputer extends Computer {
                         }
                         if(mainFrame != null)
                             mainFrame.updateDownloadingUI();
+                        if(count2 % 300 == 0){
+                            if(count2 == 300)
+                                count2 = 0;
+                            PackageController.getInstance().greetAllComputer();
+                        }
                         Thread.sleep(100);
                         ++count;
+                        ++count2;
                     }
                 } catch (Exception e) {
                     System.out.println("Refresh: " + e.getMessage());
                 }
             }
         });
+        this.port = LocalSetting.getInstance().getPort();
         refreshListThread.start();
     }
 
@@ -124,7 +134,7 @@ public class MyComputer extends Computer {
 
     }
 
-    public void addNewDownloadTask(String md5){
+    public void addNewDownloadTask(String md5, ArrayList<Computer> listCom){
         FileSeed fileSeed = null;
         for(int i = 0; i < this.sharedList.size(); i++){
             if(this.sharedList.get(i).getMd5().equals(md5)){
@@ -133,7 +143,7 @@ public class MyComputer extends Computer {
             }
         }
         if(fileSeed != null){
-            DownloadController downloadController = new DownloadController(fileSeed);
+            DownloadController downloadController = new DownloadController(fileSeed, listCom);
             downloadController.start();
             this.listDownloading.addElement(downloadController);
         }
@@ -194,7 +204,7 @@ public class MyComputer extends Computer {
             for(int i = 0; i < this.listConnected.size(); i++){
                 Computer computer = this.listConnected.get(i);
                 if(computer.getStatus() != Constant.OFFLINE){
-                    aliveConnect[ii] = computer.getIp();
+                    aliveConnect[ii] = computer.getIp()+":"+computer.getPort();
                     ++ii;
                 }
             }
@@ -225,11 +235,13 @@ public class MyComputer extends Computer {
                 }
             }
         }
-        for(int i = 0; i < this.sharingList.size(); i++){
-            FileShare fileShare = this.sharingList.get(i);
-            if(listFile.containsKey(fileShare.getMd5())){
-                listFile.get(fileShare.getMd5()).setStatus(Constant.SHARING);
-            }
+        if(this.sharingList != null){
+//            System.out.println(this.sharingList.size());
+            for(int i = 0; i < this.sharingList.size(); i++){
+                FileShare fileShare = this.sharingList.get(i);
+                if(listFile.containsKey(fileShare.getMd5())){
+                    listFile.get(fileShare.getMd5()).setStatus(Constant.SHARING);
+                }
 //            else{
 //                FileSeed fileSeed = new FileSeed();
 //                fileSeed.setName(fileShare.getName());
@@ -239,7 +251,10 @@ public class MyComputer extends Computer {
 //                fileSeed.setStatus(Constant.SHARING);
 //                listFile.put(fileShare.getMd5(), fileSeed);
 //            }
+            }
+
         }
+
 
         for (int i = 0; i < this.listDownloading.size(); i++){
             if(this.listDownloading.get(i).isAlive()){
@@ -282,6 +297,7 @@ public class MyComputer extends Computer {
         if(!exist){
             this.sharingList.addElement(fileShare);
         }
+        FileSharedHolder.getInstance().writeHolder();
     }
 
     public FileSeed getFileSeedBy(String md5){

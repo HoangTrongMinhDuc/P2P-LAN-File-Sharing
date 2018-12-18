@@ -69,7 +69,7 @@ public class Helper {
                 return "";
         }
     }
-
+//    static
     public static byte[] combineByteArray(byte[] type, byte[] md5File, byte[] indexPart, byte[] checksum, byte[] data){
         byte[] makedBytes = {2, 0, 1, 8};
         int size = type.length + 4 + md5File.length + 1 + indexPart.length + 1 + checksum.length + data.length;

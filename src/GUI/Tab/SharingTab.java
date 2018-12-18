@@ -1,8 +1,11 @@
 package GUI.Tab;
 
 import GUI.CustomComponent.FileSharingList;
+import GUI.Frame.CustomLoading;
+import GUI.Frame.SettingFrame;
 import Model.FileShare;
 import Controller.MyComputer;
+import javafx.scene.control.DialogPane;
 import util.FileSharedHolder;
 import util.LocalSetting;
 
@@ -20,7 +23,9 @@ public class SharingTab extends JPanel {
     private JList<FileShare> list;
     private DefaultListModel<FileShare> model;
     private JButton btnAdd;
-    public SharingTab(){
+    private JFrame parentFrame;
+    public SharingTab(JFrame parentFrame){
+        this.parentFrame = parentFrame;
         initComponent();
         initLayout();
         addListener();
@@ -61,7 +66,27 @@ public class SharingTab extends JPanel {
 
                 if(p == JFileChooser.APPROVE_OPTION){
                     File file = new File(fileChooser.getSelectedFile().toString());
+//                    JDialog dialog = new JDialog();
+//                    dialog.setUndecorated(true);
+//                    dialog.setLocationRelativeTo(null);
+//                    JPanel panel = new JPanel();
+//                    panel.setBackground(new Color(255, 202, 197));
+//                    panel.setLayout(new BorderLayout());
+//                    panel.setPreferredSize(new Dimension(250, 50));
+//                    panel.setMinimumSize(panel.getPreferredSize());
+//                    panel.setMaximumSize(panel.getPreferredSize());
+//                    dialog.setContentPane(panel);
+//                    dialog.setAlwaysOnTop(true);
+//                    dialog.getContentPane().add(new JLabel("qwerty", SwingConstants.CENTER), BorderLayout.CENTER);
+//                    dialog.setBounds(0, 0, 250, 50);
+//                    dialog.setVisible(true);
+//                    System.out.println(dialog.isShowing()?"showing":"not show");
+//                    JOptionPane.showMessageDialog(getRootPane(), "Loading", "load", JOptionPane.PLAIN_MESSAGE);
+
                     addNewFile(file);
+
+//                    dialog.setVisible(false);
+//                    dialog.dispose();
                 }
             }
         });
@@ -89,10 +114,7 @@ public class SharingTab extends JPanel {
 
     private void addNewFile(File file){
         try{
-            String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(new FileInputStream(file));
-            FileShare fileShare = new FileShare(file.getName(), md5, (int)file.length(), file.getPath());
-            MyComputer.getInstance().addNewSharingFile(fileShare);
-            FileSharedHolder.getInstance().writeHolder();
+            CustomLoading customLoading = new CustomLoading(parentFrame, file);
             this.updateUI();
         }catch (Exception e){
             System.out.println("Error add share: " + e.getMessage());

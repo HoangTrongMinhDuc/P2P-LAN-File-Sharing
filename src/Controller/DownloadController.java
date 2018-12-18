@@ -26,10 +26,11 @@ public class DownloadController extends Thread {
     BlockingQueue<DataPack> listPartData = new LinkedBlockingDeque<>();
     private boolean isEndTask = false;
     private long pastTime = 0;
+    private int oldIndex = -2;
 //    private ArrayList
-    public DownloadController(FileSeed fileSeed){
+    public DownloadController(FileSeed fileSeed, ArrayList<Computer> listCom){
         this.fileDownload = new FileDownload(fileSeed);
-        this.listCom = fileSeed.getListComputer();
+        this.listCom = listCom;
         File file = new File(fileDownload.getPath());
         try {
             if(!file.exists()){
@@ -69,7 +70,6 @@ public class DownloadController extends Thread {
     public void run() {
         startRequest();
         super.run();
-        byte[] d = null;
         while (!this.isEndTask){
             try{
                 if(pastTime == 0){
@@ -119,7 +119,7 @@ public class DownloadController extends Thread {
                 }else
                     System.out.println("data null");
             }catch (Exception e){
-                System.out.println("fail packet"+e.getMessage()+ Arrays.toString(d));
+                System.out.println("fail packet"+e.getMessage());
             }
 //            System.out.println("ssss");
 
@@ -150,7 +150,10 @@ public class DownloadController extends Thread {
         try {
             if(this.listIndex.containsKey(index)){
                 System.out.println("write " + index);
-                randomAccessFile.seek(index * Constant.PART_SIZE);
+                if(oldIndex != index - 1){
+                    randomAccessFile.seek(index * Constant.PART_SIZE);
+                    oldIndex = index;
+                }
                 randomAccessFile.write(data);
                 this.listIndex.remove(index);
                 this.fileDownload.addDownloadedSize(data.length);

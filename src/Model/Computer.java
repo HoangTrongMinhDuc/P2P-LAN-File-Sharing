@@ -97,12 +97,17 @@ public class Computer {
     }
 
     public int compareTo(Computer computer){
+        if(computer.getIp().equals("localhost")){
+            return (this.ip+this.port).compareTo(computer.getIp()+computer.getPort());
+        }
         String ip1 = this.ip;
         String ip2 = computer.getIp();
         if(ip1.length() != 11)
             ip1 = reCompleteIp(ip1);
         if(computer.getIp().length() != 11)
             ip2 = reCompleteIp(ip2);
+        ip1 = ip1+":"+this.port;
+        ip2 = ip2+":"+computer.getPort();
         return ip1.compareTo(ip2);
     }
 

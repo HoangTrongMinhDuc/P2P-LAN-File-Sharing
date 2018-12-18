@@ -1,5 +1,6 @@
 package util;
 
+import Controller.PackageController;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -85,7 +86,7 @@ public class LocalSetting {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(int port, boolean isRestart) {
         this.port = port;
         writeSetting();
     }

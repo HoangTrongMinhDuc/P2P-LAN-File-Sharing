@@ -3,28 +3,42 @@ package Controller;
 import util.Constant;
 import util.LocalSetting;
 
+import javax.swing.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class PackageController {
-    public final static byte[] BUFFER = new byte[4096];
     private boolean isFirstTime = true;
     private DatagramSocket datagramSocket = null;
-    volatile private Queue<DatagramPacket> queueReceivePacket = new LinkedList<>();
-
+    volatile private BlockingQueue<DatagramPacket> queueReceivePacket = new LinkedBlockingDeque<>();
+    private int port = 0;
     private static PackageController instance = new PackageController();
     public static PackageController getInstance(){return instance;}
     volatile private boolean switchThread = true;
     private PackageController(){
-        try{
-                datagramSocket = new DatagramSocket(LocalSetting.getInstance().getPort());
-        }catch (Exception e){
-            System.out.println("Create socket: " + e.getMessage());
+        while(true){
+            try{
+                if(this.port == 0 )
+                    port = LocalSetting.getInstance().getPort();
+                datagramSocket = new DatagramSocket(this.port);
+                if(LocalSetting.getInstance().getPort() != this.port){
+                    LocalSetting.getInstance().setPort(this.port, false);
+                }
+                System.out.println("create port success");
+                break;
+            }catch (Exception e){
+                System.out.println("Create socket: " + e.getMessage());
+                String portStr = JOptionPane.showInputDialog(new JFrame(), "Please enter new port:", "The port " + this.port + " already in use", JOptionPane.PLAIN_MESSAGE);
+                this.port = Integer.parseInt(portStr);
+            }
         }
+
         //start receive mess
         Thread receiveUdpThread = new Thread(new Runnable() {
             @Override
@@ -33,57 +47,63 @@ public class PackageController {
             }
         });
         receiveUdpThread.start();
-
-        //start receive tcp packet
-        Thread receiveTcpThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                receiverTcp();
-            }
-        });
-//        receiveTcpThread.start();
+//        Thread receiveUdpThread2 = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                receiverUdpSec();
+//            }
+//        });
+//        receiveUdpThread2.start();
 
         //send hello to all computer
-        Thread greetThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true){
-                    try{
-                        greetAllComputer();
-                        Thread.sleep(Constant.REFRESH_GREET_TIME);
-                    }catch (Exception e){
-                        System.out.println("Greet thread: " + e.getMessage());
-                    }
-                }
-            }
-        });
-        greetThread.start();
+//        Thread greetThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (switchThread){
+//                    try{
+//                        greetAllComputer();
+//                        Thread.sleep(Constant.REFRESH_GREET_TIME);
+//                    }catch (Exception e){
+//                        System.out.println("Greet thread: " + e.getMessage());
+//                    }
+//                }
+//            }
+//        });
+//        greetThread.start();
     }
 
 
     public void receiverUdp(){
         try{
             while (true){
-                    byte[] datagram = new byte[Constant.PART_SIZE+1024];
-                    DatagramPacket incoming = new DatagramPacket(datagram, datagram.length);
+//                if(this.switchThread){
+                byte[] datagram = new byte[Constant.PART_SIZE+512];
+                DatagramPacket incoming = new DatagramPacket(datagram, datagram.length);
                     datagramSocket.receive(incoming);
+//                    this.switchThread = false;
                     this.queueReceivePacket.add(incoming);
+//                }
             }
         }catch (Exception e){
-            System.out.println("REC " + e.getMessage());
+            System.out.println("REC1 " + e.getMessage());
         }
     }
-
-    public void receiverTcp(){
+    public void receiverUdpSec(){
         try{
             while (true){
-
+                if(!this.switchThread){
+                    byte[] datagram = new byte[Constant.PART_SIZE+256];
+                    DatagramPacket incoming = new DatagramPacket(datagram, datagram.length);
+                    datagramSocket.receive(incoming);
+                    this.switchThread = true;
+                    this.queueReceivePacket.add(incoming);
+                }
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("REC2 " + e.getMessage());
         }
     }
-    private void greetAllComputer(){
+    public void greetAllComputer(){
         try{
             String[] allAddress;
             String greetMes = MyComputer.getInstance().getHelloWord(this.isFirstTime);
@@ -98,10 +118,18 @@ public class PackageController {
             }
             if(allAddress != null)
             for (String ip : allAddress) {
-                if(!ip.equals(MyComputer.getInstance().getIp()))
                 {
-                    sendUdpMesTo(ip, Constant.DEFAULT_PORT, greetMes);
-                    System.out.println("Sent hello " + ip);
+                    System.out.println("parsing");
+                    int p = Constant.DEFAULT_PORT;
+                    if(ip.split(":").length == 2) {
+                        p = Integer.parseInt(ip.split(":")[1]);
+                        ip = ip.split(":")[0];
+                    }
+                    System.out.println("parse done");
+                    if(!ip.equals(MyComputer.getInstance().getIp()) || p!=MyComputer.getInstance().getPort()){
+                        sendUdpMesTo(ip, p, greetMes);
+                        System.out.println("Sent hello " + ip);
+                    }
                 }
             }
         }catch (Exception e){
@@ -147,6 +175,16 @@ public class PackageController {
 
     public Queue<DatagramPacket> getQueueReceivePacket() {
         return queueReceivePacket;
+    }
+
+    public void reStartSocket(int port){
+        try{
+            this.port = port;
+            this.datagramSocket = new DatagramSocket(this.port);
+            this.isFirstTime = true;
+        }catch (Exception e){
+            System.out.println("Restart socket error: " + e.getMessage());
+        }
     }
 }
 

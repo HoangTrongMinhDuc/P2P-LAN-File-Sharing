@@ -23,6 +23,8 @@ public class SeedingController extends Thread {
     private int leftPartSize;
     private boolean isEnabled = true;
     private boolean isEndTask = false;
+    volatile private boolean isEndSuccessed = false;
+    private int oldIndex = -2;
 
     public SeedingController(Computer computer, FileShare fileShare, ArrayList<Integer> partList){
         this.computer = computer;
@@ -35,9 +37,6 @@ public class SeedingController extends Thread {
         totalPart = (int)file.length() / Constant.PART_SIZE;
         leftPartSize = (int)file.length() - totalPart * Constant.PART_SIZE;
         System.out.println("seed: "+totalPart+"|"+leftPartSize);
-        if(partList.size() < 200)
-            for(int i : partList)
-                System.out.print(i+"=");
         if(leftPartSize != 0){
             totalPart++;
         }
@@ -61,6 +60,12 @@ public class SeedingController extends Thread {
                 }
             }
         }
+        System.out.println("seed done");
+//        while (!isEndSuccessed){
+//            if(!isEndSuccessed){
+//
+//            }
+//        }
     }
 
     private void seedPart(int index){
@@ -74,10 +79,11 @@ public class SeedingController extends Thread {
                 else
                     data = new byte[Constant.PART_SIZE];
             }
-            fileInputStream.getChannel().position(index * Constant.PART_SIZE);
+            if(oldIndex != index - 1){
+                fileInputStream.getChannel().position(index * Constant.PART_SIZE);
+                oldIndex = index;
+            }
             fileInputStream.read(data);
-            String jsonData = "[";
-            jsonData += "]";
             Checksum checker = new Adler32();
             ((Adler32) checker).update(data);
             PackageController.getInstance().sendDataUdpMesTo(
@@ -91,12 +97,7 @@ public class SeedingController extends Thread {
                             data
                     )
             );
-            if(index == 21 || index == 22)
-                System.out.println("Sent="+checker.getValue());
-//            String res = "{\"type\":" + Constant.DATA_MES + ",\"md5File\":\"" + fileShare.getMd5() + "\",\"indexPart\":" + index  +",\"checksum\":\""
-//                    + checker.getValue() + "\",\"data\":" + jsonData + "}";
-//            PackageController.getInstance().sendUdpMesTo(this.computer.getIp(), this.computer.getPort(), res);
-            Thread.sleep(0,1);
+//            Thread.sleep(0,1);
         }catch (Exception e){
             System.out.println("Seeding error: " + e.getMessage());
         }

@@ -153,7 +153,7 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void iniThirdTab(){
-        SharingTab sharingTab = new SharingTab();
+        SharingTab sharingTab = new SharingTab(this);
         tabbedPane.addTab("Sharing", null, sharingTab, "Your sharing files");
     }
 
@@ -229,7 +229,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
     public void updateDownloadingUI(){
         if(this.downloadingTab != null){
-            this.downloadingTab.updateListUI();
+            if(this.tabbedPane.getSelectedIndex() == 1)
+                this.downloadingTab.updateListUI();
         }
     }
 }

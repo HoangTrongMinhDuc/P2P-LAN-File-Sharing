@@ -23,8 +23,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class SolvePacketController {
     JsonParser parser = new JsonParser();
     private HashMap<String, ArrayList<SeedingController>> listSeeding = new HashMap<>();
-    Queue<JsonObject> listDataObject = new LinkedList<>();
-    volatile BlockingQueue<DataPack> listData = new LinkedBlockingDeque<>();
+    private Queue<JsonObject> listDataObject = new LinkedList<>();
+    volatile private BlockingQueue<DataPack> listData = new LinkedBlockingDeque<>();
     private static SolvePacketController ourInstance = new SolvePacketController();
     public static SolvePacketController getInstance() {
         return ourInstance;
@@ -79,7 +79,7 @@ public class SolvePacketController {
                                 }
                                 case Constant.DATA_MES:
                                 {
-                                    this.listDataObject.add(jsonObject);
+//                                    this.listDataObject.add(jsonObject);
 //                            solveDataPacket(ip, port, jsonObject);
                                     break;
                                 }
@@ -116,7 +116,7 @@ public class SolvePacketController {
             FileShare fileShare = Helper.convertToFileShare(jsonArray.get(i).getAsJsonObject());
             listShare.put(fileShare.getMd5(), fileShare);
         }
-        System.out.println("Solve hello from " + ip);
+        System.out.println("Solve hello from " + ip + ":" + port);
         MyComputer.getInstance().addComputer(new Computer(comName, ip, port, timeStamp, Constant.ONLINE, listShare));
     }
 

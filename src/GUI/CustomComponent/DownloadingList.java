@@ -33,16 +33,21 @@ public class DownloadingList  extends JPanel implements ListCellRenderer<Downloa
         namePanel.setMinimumSize(dimension);
         namePanel.setPreferredSize(dimension);
         lbName = new JLabel();
-        lbName.setMaximumSize(new Dimension(200, 25));
+        lbName.setMaximumSize(new Dimension(300, 25));
         lbName.setMinimumSize(lbName.getMaximumSize());
         lbName.setPreferredSize(lbName.getMaximumSize());
         lbName.setAlignmentX(JLabel.LEFT);
         namePanel.add(lbName);
+        JPanel propanel = new JPanel();
+        propanel.setLayout(new BoxLayout(propanel, BoxLayout.X_AXIS));
+        propanel.setBackground(Color.WHITE);
         progressBar = new JProgressBar();
-        progressBar.setMaximumSize(new Dimension(350, 10));
+        progressBar.setMaximumSize(new Dimension(300, 20));
         progressBar.setMinimumSize(progressBar.getMaximumSize());
         progressBar.setPreferredSize(progressBar.getMaximumSize());
-        namePanel.add(progressBar);
+        propanel.add(progressBar);
+        propanel.add(Box.createHorizontalGlue());
+        namePanel.add(propanel);
 
         wrapper.add(namePanel);
 
@@ -50,12 +55,12 @@ public class DownloadingList  extends JPanel implements ListCellRenderer<Downloa
         lbSize = new JLabel();
         wrapper.add(lbSize);
         wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
-        lbMd5 = new JLabel();
-        lbMd5.setMaximumSize(new Dimension(200, 50));
-        lbMd5.setPreferredSize(lbMd5.getMaximumSize());
-        lbMd5.setMinimumSize(lbMd5.getMaximumSize());
-        wrapper.add(lbMd5);
-        wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
+//        lbMd5 = new JLabel();
+//        lbMd5.setMaximumSize(new Dimension(200, 50));
+//        lbMd5.setPreferredSize(lbMd5.getMaximumSize());
+//        lbMd5.setMinimumSize(lbMd5.getMaximumSize());
+//        wrapper.add(lbMd5);
+//        wrapper.add(Box.createRigidArea(new Dimension(10, 0)));
 
         lbDel = new JLabel();
         lbDel.setIcon(new ImageIcon(new ImageIcon(Constant.PAUSE_ICON).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
@@ -83,9 +88,10 @@ public class DownloadingList  extends JPanel implements ListCellRenderer<Downloa
         FileDownload fileDownload = value.getFileDownload();
         this.lbName.setText(fileDownload.getName());
         long percent = (fileDownload.getDownloadedSize()*100/fileDownload.getSize());
-        this.lbSize.setText((percent) + "% / " + fileDownload.getMegaSize() + " MB / " + fileDownload.getSpeed() + " MB/s");
+        this.lbSize.setText(fileDownload.getMegaSize() + " MB / " + fileDownload.getSpeed() + " MB/s");
 //        this.lbMd5.setText(fileDownload.getMd5());
         this.progressBar.setValue((int)percent);
+        this.progressBar.setStringPainted(true);
         String src = Constant.PAUSE_ICON;
         switch (fileDownload.getStatus()){
             case Constant.DOWNLOADING:
