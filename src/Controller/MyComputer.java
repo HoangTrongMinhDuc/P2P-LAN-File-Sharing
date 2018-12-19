@@ -109,6 +109,8 @@ public class MyComputer extends Computer {
                 if(res > 0){
                     if(index == this.listConnected.size()-1){
                         this.listConnected.addElement(computer);
+                        PackageController.getInstance().sendUdpMesTo(computer.getIp(), computer.getPort(), getHelloWord(true));
+                        System.out.println("added " + computer.getIp());
                         break;
                     }
                     continue;
@@ -116,6 +118,7 @@ public class MyComputer extends Computer {
                     //if old connected computer
                     if(res < 0){
                         this.listConnected.add(index, computer);
+                        PackageController.getInstance().sendUdpMesTo(computer.getIp(), computer.getPort(), getHelloWord(true));
                         System.out.println("added " + computer.getIp());
                         break;
                     }else{
@@ -130,8 +133,6 @@ public class MyComputer extends Computer {
                 }
             }
         }
-
-
     }
 
     public void addNewDownloadTask(String md5, ArrayList<Computer> listCom){
@@ -236,21 +237,20 @@ public class MyComputer extends Computer {
             }
         }
         if(this.sharingList != null){
-//            System.out.println(this.sharingList.size());
             for(int i = 0; i < this.sharingList.size(); i++){
                 FileShare fileShare = this.sharingList.get(i);
                 if(listFile.containsKey(fileShare.getMd5())){
                     listFile.get(fileShare.getMd5()).setStatus(Constant.SHARING);
                 }
-//            else{
-//                FileSeed fileSeed = new FileSeed();
-//                fileSeed.setName(fileShare.getName());
-//                fileSeed.setSize(fileShare.getSize());
-//                fileSeed.setMd5(fileShare.getMd5());
-//                fileSeed.addComputer(this);
-//                fileSeed.setStatus(Constant.SHARING);
-//                listFile.put(fileShare.getMd5(), fileSeed);
-//            }
+                else{
+                    FileSeed fileSeed = new FileSeed();
+                    fileSeed.setName(fileShare.getName());
+                    fileSeed.setSize(fileShare.getSize());
+                    fileSeed.setMd5(fileShare.getMd5());
+                    fileSeed.addComputer(this);
+                    fileSeed.setStatus(Constant.SHARING);
+                    listFile.put(fileShare.getMd5(), fileSeed);
+                }
             }
 
         }
@@ -264,10 +264,13 @@ public class MyComputer extends Computer {
                 }
             }
         }
-        this.sharedList.clear();
-        DefaultListModel<FileSeed> tempList = new DefaultListModel<>();
         for (FileSeed fileSeed : listFile.values()){
             Helper.insertElement(this.sharedList, fileSeed);
+        }
+        for(int i = 0; i < this.sharedList.size(); i++){
+            if(!listFile.containsKey(this.sharedList.get(i).getMd5())){
+                this.sharedList.removeElementAt(i);
+            }
         }
     }
 
