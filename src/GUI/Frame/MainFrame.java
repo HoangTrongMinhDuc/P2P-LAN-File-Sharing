@@ -7,6 +7,7 @@ import GUI.Tab.DownloadingTab;
 import GUI.Tab.SharingTab;
 import Model.Computer;
 import Model.FileSeed;
+import util.Constant;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -20,13 +21,10 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class MainFrame extends JFrame implements ActionListener {
-//    public static MainFrame instance = new MainFrame();
-//    public static MainFrame getInstance(){return instance;}
 
     private final int FRAME_WIDTH = 1024;
     private final int FRAME_HEIGHT = 680;
     private JPanel leftPanel;
-    private JMenuBar menuBar;
     private JTabbedPane tabbedPane;
     private JButton btnAddComputer;
     private JButton btnRefresh;
@@ -35,7 +33,6 @@ public class MainFrame extends JFrame implements ActionListener {
     private  DefaultListModel<Computer> models;
     volatile private JList<Computer> listComputer;
     private JList<FileSeed> listFileSeed;
-    private Thread updateThread = null;
     public MainFrame(DefaultListModel<Computer> model){
         this.models = model;
         initLayout();
@@ -76,23 +73,6 @@ public class MainFrame extends JFrame implements ActionListener {
             listComputer.setCellRenderer(new ComputerList());
             listComputer.setVisibleRowCount(10);
             listComputer.setVisible(true);
-            if(updateThread == null){
-                updateThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true){
-                            updateList(MyComputer.getInstance().listConnected);
-                            try{
-                                Thread.sleep(1000);
-                            }catch (Exception e){
-                                System.out.println("2323"+e.getMessage());
-                            }
-
-                        }
-                    }
-                });
-//                updateThread.start();
-            }
             leftPanel.add(new JScrollPane(listComputer));
         }catch (Exception e){
             System.out.println("Left panel: " + e.getMessage());
@@ -118,45 +98,19 @@ public class MainFrame extends JFrame implements ActionListener {
         listFileSeed.setCellRenderer(new FileList());
         allFilesPanel.setLayout(new BorderLayout());
         allFilesPanel.add(new JScrollPane(listFileSeed), BorderLayout.CENTER);
-        tabbedPane.addTab("All files",null,allFilesPanel, "All files");
-//        listFileSeed.setSelectionModel(new DefaultListSelectionModel(){
-//            private static final long serialVersionUID = 1L;
-//
-//            boolean gestureStarted = false;
-//
-//            @Override
-//            public void setSelectionInterval(int index0, int index1) {
-//                if(!gestureStarted){
-//                    if (isSelectedIndex(index0)) {
-//                        super.removeSelectionInterval(index0, index1);
-//                    } else {
-//                        super.addSelectionInterval(index0, index1);
-//                    }
-//                }
-//                gestureStarted = true;
-//            }
-//
-//            @Override
-//            public void setValueIsAdjusting(boolean isAdjusting) {
-//                if (isAdjusting == false) {
-//                    gestureStarted = false;
-//                }
-//            }
-//
-//        });
+        tabbedPane.addTab("All files",new ImageIcon(new ImageIcon(Constant.ALLFILE_ICON).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)),allFilesPanel, "All files");
     }
 
     private void initSecTab(){
         downloadingTab = new DownloadingTab();
-        tabbedPane.addTab("Downloading",null,downloadingTab, "Your files downloading");
+        tabbedPane.addTab("Downloading",new ImageIcon(new ImageIcon(Constant.DOWNLOAD_ICON).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)),downloadingTab, "Your files downloading");
         MyComputer.getInstance().setJListDownloading(downloadingTab.getList());
     }
 
     private void iniThirdTab(){
         SharingTab sharingTab = new SharingTab(this);
-        tabbedPane.addTab("Sharing", null, sharingTab, "Your sharing files");
+        tabbedPane.addTab("Sharing", new ImageIcon(new ImageIcon(Constant.SHARING_ICON).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)), sharingTab, "Your sharing files");
     }
-
 
     private void setListener(){
         btnAddComputer.addActionListener(this);
@@ -190,41 +144,6 @@ public class MainFrame extends JFrame implements ActionListener {
     private void openFileDetail(int index){
         System.out.println("open detail");
         new DetailFileSeedFrame(this, index);
-    }
-    public void updateList(DefaultListModel<Computer> model){
-        if(model != null){
-            System.out.println("update list1");
-            this.listComputer.setModel(model);
-            System.out.println("update list2");
-            try{
-//                this.listComputer.updateUI();
-
-            }catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-            System.out.println("update list");
-        }
-    }
-
-    public JList<Computer> getJList() {
-        listComputer.getModel().addListDataListener(new ListDataListener() {
-            @Override
-            public void intervalAdded(ListDataEvent e) {
-                System.out.println("DATA ADDDDD");
-            }
-
-            @Override
-            public void intervalRemoved(ListDataEvent e) {
-
-            }
-
-            @Override
-            public void contentsChanged(ListDataEvent e) {
-                System.out.println("DATA CHANGEEEE");
-            }
-        });
-
-        return this.listComputer;
     }
 
     public void updateDownloadingUI(){

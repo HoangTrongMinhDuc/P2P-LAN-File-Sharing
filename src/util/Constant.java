@@ -33,4 +33,5 @@ public class Constant {
     public static final String PAUSE_ICON = "src/res/pause.png";
     public static final String PLAY_ICON = "src/res/play.png";
     public static final String DONE_ICON = "src/res/done.png";
+    public static final String ALLFILE_ICON = "src/res/allfile.png";
 }
