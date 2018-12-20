@@ -70,17 +70,15 @@ public class Helper {
         }
     }
 //    static
-    public static byte[] combineByteArray(byte[] type, byte[] md5File, byte[] indexPart, byte[] checksum, byte[] data){
+    public static byte[] combineByteArray(byte[] type, byte[] md5File, byte[] indexPart, byte[] data){
         byte[] makedBytes = {2, 0, 1, 8};
-        int size = type.length + 4 + md5File.length + 1 + indexPart.length + 1 + checksum.length + data.length;
+        int size = type.length + 4 + md5File.length + 1 + indexPart.length + data.length;
         ByteBuffer byteBuffer = ByteBuffer.allocate(size);
         byteBuffer.put(type);
         byteBuffer.put(makedBytes);
         byteBuffer.put(md5File);
         byteBuffer.put((byte)(4 + md5File.length + 1 + indexPart.length));
         byteBuffer.put(indexPart);
-        byteBuffer.put((byte)(4 + md5File.length + 1 + indexPart.length + 1 + checksum.length));
-        byteBuffer.put(checksum);
         byteBuffer.put(data);
         return byteBuffer.array();
     }

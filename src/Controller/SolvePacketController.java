@@ -62,7 +62,7 @@ public class SolvePacketController {
                 byte[] dat = received.getData();
                 if(dat[0] == 8 && dat[1] == 2 && dat[2] == 0){
                     this.listData.add(new DataPack(dat, received.getLength()));
-                    System.out.println("data in" + dat[38]+"|"+received.getLength());
+//                    System.out.println("data in" + dat[38]+"|"+received.getLength());
                 }else{
                     String message = new String(received.getData(), received.getOffset(), received.getLength());
                     JsonElement jsonElement = null;
@@ -116,7 +116,7 @@ public class SolvePacketController {
             FileShare fileShare = Helper.convertToFileShare(jsonArray.get(i).getAsJsonObject());
             listShare.put(fileShare.getMd5(), fileShare);
         }
-        System.out.println("Solve hello from " + ip + ":" + port);
+//        System.out.println("Solve hello from " + ip + ":" + port);
         MyComputer.getInstance().addComputer(new Computer(comName, ip, port, timeStamp, Constant.ONLINE, listShare));
     }
 
@@ -128,10 +128,10 @@ public class SolvePacketController {
                 byte[] data = dataPack.getData();
                 String md5File = new String(data, 5, 32);
                 DownloadController downloadController = MyComputer.getInstance().getDownloadControllerBy(md5File);
-                System.out.println("routing");
+//                System.out.println("routing");
                 if(downloadController != null && downloadController.isAlive()){
                     downloadController.addDataPartToQueue(dataPack);
-                    System.out.println("added");
+//                    System.out.println("added");
                 }else
                     System.out.println("downloading null");
             }catch (Exception e){

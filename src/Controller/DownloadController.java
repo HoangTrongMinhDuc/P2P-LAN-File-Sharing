@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
@@ -98,23 +100,23 @@ public class DownloadController extends Thread {
                     for(int i = 38; i <= data[37]; i++){
                         indexPart = indexPart*100 + data[i];
                     }
-                    System.out.println("idex"+indexPart);
+//                    System.out.println("idex"+indexPart);
 //                    if(!this.listIndex.containsKey(0) && indexPart==0 || indexPart==21){
 //                        System.out.println("zero"+Arrays.toString(data));
 //                    }
-                    long cSum = 0;
-                    for(int i = data[37]+2; i <= data[data[37]+1]; i++){
-                        cSum = cSum*100 + data[i];
-                    }
-                    System.out.println("==="+cSum);
-                    byte[] dt = new byte[dtLength-data[data[37]+1]-1];
-                    System.arraycopy(data,data[data[37]+1]+1, dt, 0, dt.length);
-                    Checksum checker = new Adler32();
-                    ((Adler32) checker).update(dt);
-                    if(checker.getValue() == cSum){
-                        System.out.println("+++++++++++++++++++++++++");
+//                    long cSum = 0;
+//                    for(int i = data[37]+2; i <= data[data[37]+1]; i++){
+//                        cSum = cSum*100 + data[i];
+//                    }
+//                    System.out.println("==="+cSum);
+                    byte[] dt = new byte[dtLength-data[37]-1];
+                    System.arraycopy(data,data[37]+1, dt, 0, dt.length);
+//                    Checksum checker = new Adler32();
+//                    ((Adler32) checker).update(dt);
+//                    if(checker.getValue() == cSum){
+//                        System.out.println("+++++++++++++++++++++++++");
                         addPartToFile(indexPart, dt);
-                    }
+//                    }
 
                 }else
                     System.out.println("data null");
@@ -149,7 +151,7 @@ public class DownloadController extends Thread {
     public void addPartToFile(int index, byte[] data){
         try {
             if(this.listIndex.containsKey(index)){
-                System.out.println("write " + index);
+//                System.out.println("write " + index);
                 if(oldIndex != index - 1){
                     randomAccessFile.seek(index * Constant.PART_SIZE);
                     oldIndex = index;
@@ -179,9 +181,16 @@ public class DownloadController extends Thread {
 
     public void requestAgain(){
         ArrayList<Integer> arrayList = new ArrayList<>();
-        for(int index : this.listIndex.values()){
+        for(int index : this.listIndex.keySet()){
             arrayList.add(index);
         }
-        PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(), fileDownload.getMd5(), arrayList);
+        if(arrayList.size() > 100){
+            ArrayList<Integer> array = new ArrayList<>();
+            for(int i = 0; i < 50; i++){
+                array.add(arrayList.get(i));
+            }
+            PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(), fileDownload.getMd5(), array);
+        }else
+            PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(), fileDownload.getMd5(), arrayList);
     }
 }

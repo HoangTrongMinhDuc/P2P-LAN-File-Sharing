@@ -32,24 +32,24 @@ public class DownloadingTab extends JPanel {
     }
 
     private void addListener(){
-//        this.list.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                super.mouseClicked(e);
-//                if(list.getModel().getSize() == 0) return;
-//                HashMap<Integer, Integer> indexs = list.getModel().getElementAt(list.locationToIndex(e.getPoint())).getListIndex();
-//                System.out.println("list index");
-//                ArrayList<Integer> arrayList = new ArrayList<>();
-//                if(!indexs.isEmpty()){
-//                    for(int index : indexs.keySet()){
-//                        System.out.print(index+"|");
-//                        arrayList.add(index);
-//                    }
-//                    list.getModel().getElementAt(list.locationToIndex(e.getPoint())).requestAgain();
-//                }
-//                System.out.println("--------");
-//            }
-//        });
+        this.list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(list.getModel().getSize() == 0) return;
+                HashMap<Integer, Integer> indexs = list.getModel().getElementAt(list.locationToIndex(e.getPoint())).getListIndex();
+                System.out.println("list index");
+                ArrayList<Integer> arrayList = new ArrayList<>();
+                if(!indexs.isEmpty()){
+                    for(int index : indexs.keySet()){
+                        System.out.print(index+"|");
+                        arrayList.add(index);
+                    }
+                    list.getModel().getElementAt(list.locationToIndex(e.getPoint())).requestAgain();
+                }
+                System.out.println("--------");
+            }
+        });
     }
 
     public void updateListUI(){

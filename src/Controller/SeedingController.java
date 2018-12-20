@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import util.Constant;
 import util.Helper;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Array;
@@ -60,7 +61,14 @@ public class SeedingController extends Thread {
                 }
             }
         }
-        System.out.println("seed done");
+        try {
+            File file = new File("H:\\ss.txt");
+            file.createNewFile();
+            System.out.println("seed done");
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 //        while (!isEndSuccessed){
 //            if(!isEndSuccessed){
 //
@@ -84,8 +92,8 @@ public class SeedingController extends Thread {
                 oldIndex = index;
             }
             fileInputStream.read(data);
-            Checksum checker = new Adler32();
-            ((Adler32) checker).update(data);
+//            Checksum checker = new Adler32();
+//            ((Adler32) checker).update(data);
             PackageController.getInstance().sendDataUdpMesTo(
                     this.computer.getIp(),
                     this.computer.getPort(),
@@ -93,10 +101,12 @@ public class SeedingController extends Thread {
                             Helper.convertNumber2Bytes(Constant.DATA_MES),
                             fileShare.getMd5().getBytes(),
                             Helper.convertNumber2Bytes(index),
-                            Helper.convertNumber2Bytes(checker.getValue()),
                             data
                     )
             );
+            if(this.partList.size() < 200){
+                System.out.println(index+":"+Arrays.toString(data));
+            }
 //            Thread.sleep(0,1);
         }catch (Exception e){
             System.out.println("Seeding error: " + e.getMessage());
