@@ -49,7 +49,7 @@ public class DetailFileSeedFrame extends JDialog implements ActionListener {
         container.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
         createLine("File name: ", fileSeed.getName());
         createLine("MD5: ", fileSeed.getMd5());
-        createLine("Size: ", fileSeed.getMegaSize() + " MB (" + fileSeed.getSize() + " bytes)");
+        createLine("Size: ", fileSeed.getMegaSize() + " MB (" + Long.toString(fileSeed.getSize()) + " bytes)");
         createLine("Status: ", Helper.getStatus(fileSeed.getStatus()));
         container.add(Box.createVerticalGlue());
         Box lineBtn = Box.createHorizontalBox();

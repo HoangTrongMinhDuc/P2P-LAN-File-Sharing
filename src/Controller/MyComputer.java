@@ -34,10 +34,14 @@ public class MyComputer extends Computer {
         for(String src : listSrc){
             try {
                 File file = new File(src);
-                String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(new FileInputStream(file.getPath()));
-                FileShare fileShare = new FileShare(file.getName(), md5, (int)file.length(), file.getPath());
-                this.sharingList.addElement(fileShare);
-                System.out.println("add " + fileShare.getName());
+                if(file.exists()){
+                    System.out.println("SIZE:"+file.length());
+                    String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(new FileInputStream(file.getPath()));
+                    FileShare fileShare = new FileShare(file.getName(), md5, file.length(), file.getPath());
+                    this.sharingList.addElement(fileShare);
+                    System.out.println("add " + fileShare.getName());
+                }
+
             }catch (Exception e){
                 System.out.println("Error import file share: " + e.getMessage());
             }
@@ -100,6 +104,7 @@ public class MyComputer extends Computer {
     public void addComputer(Computer computer){
         if(this.listConnected.size() == 0){
             this.listConnected.addElement(computer);
+            PackageController.getInstance().sendUdpMesTo(computer.getIp(), computer.getPort(), getHelloWord(true));
             System.out.println("added " + computer.getIp());
         }else {
             int index = 0;

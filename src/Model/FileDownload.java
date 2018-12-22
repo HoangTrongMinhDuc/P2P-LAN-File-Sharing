@@ -24,8 +24,8 @@ public class FileDownload extends FileShare {
     public FileDownload(FileShare fileShare){
         this.name = fileShare.name;
         this.size = fileShare.size;
-        endPartSize = (int)(this.size % Constant.PART_SIZE);
-        totalPart = (int)(this.size / Constant.PART_SIZE);
+        endPartSize = (int)(this.size % (long)Constant.PART_SIZE);
+        totalPart = (int)(this.size / (long)Constant.PART_SIZE);
         if(endPartSize != 0)   totalPart++;
         this.md5 = fileShare.getMd5();
         this.path = LocalSetting.getInstance().getDownFolderPath() + "\\" + fileShare.getName();

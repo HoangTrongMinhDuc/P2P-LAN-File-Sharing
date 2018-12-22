@@ -85,10 +85,10 @@ public class FileSharedHolder {
     }
 
     private void validFile(){
-        for(String path : this.listFileSrc){
-            File file = new File(path);
+        for(int i = 0; i < this.listFileSrc.size(); i++){
+            File file = new File(this.listFileSrc.get(i));
             if(!file.exists()){
-                this.listFileSrc.remove(path);
+                this.listFileSrc.remove(i);
             }
         }
     }

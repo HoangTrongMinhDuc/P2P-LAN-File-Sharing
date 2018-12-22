@@ -3,6 +3,7 @@ package Controller;
 import Model.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import org.apache.commons.codec.digest.DigestUtils;
 import util.Constant;
 
@@ -28,7 +29,9 @@ public class DownloadController extends Thread {
     BlockingQueue<DataPack> listPartData = new LinkedBlockingDeque<>();
     private boolean isEndTask = false;
     private long pastTime = 0;
-    private int oldIndex = -2;
+    private long oldIndex = -2;
+    private float oldSpeed = 1;
+    private int[][] chunkIndex;
 //    private ArrayList
     public DownloadController(FileSeed fileSeed, ArrayList<Computer> listCom){
         this.fileDownload = new FileDownload(fileSeed);
@@ -50,21 +53,41 @@ public class DownloadController extends Thread {
         for (int i = 0; i < this.fileDownload.getTotalPart(); i++){
             this.listIndex.put(i, 0);
         }
-//        int leftNumPart = fileDownload.getTotalPart() % this.listCom.size();
-//        if()
-//        int numCom = this.listCom.size();
-//        for(int i = 0; i < numCom; i++){
-//            int startIndex = numCom*i;
-//            int endIndex = numCom*(i+1);
-//        }
-
-
+        if(this.listCom.size() != 1){
+            int numOfChunks = (int)Math.ceil((double)this.fileDownload.getTotalPart() / this.listCom.size());
+            chunkIndex = new int[numOfChunks][];
+            for(int i = 0; i < numOfChunks; ++i) {
+                int[] temp = new int[2];
+                int start = i * this.listCom.size();
+                int length = Math.min(this.fileDownload.getTotalPart() - start, this.listCom.size());
+                temp[0] = start;
+                temp[1] = start+length-1;
+                chunkIndex[i] = temp;
+            }
+        }
     }
 
     public void startRequest(){
         if(listCom.size() == 1){
-            PackageController.getInstance().sendDownloadRangeRequest(listCom.get(0).getIp(), listCom.get(0).getPort(), fileDownload.getMd5(),
-                    0, fileDownload.getTotalPart()-1);
+            System.out.println("first");
+            PackageController.getInstance().sendDownloadRangeRequest(
+                    listCom.get(0).getIp(),
+                    listCom.get(0).getPort(),
+                    0,
+                    fileDownload.getMd5(),
+                    0,
+                    fileDownload.getTotalPart()-1);
+        }else {
+            System.out.println("sec");
+            for(int i = 0; i < this.listCom.size(); i++){
+                PackageController.getInstance().sendDownloadRangeRequest(
+                        listCom.get(i).getIp(),
+                        listCom.get(i).getPort(),
+                        i,
+                        fileDownload.getMd5(),
+                        this.chunkIndex[i][0],
+                        chunkIndex[i][1]);
+            }
         }
     }
 
@@ -79,14 +102,12 @@ public class DownloadController extends Thread {
                 }
                 if(System.currentTimeMillis() - pastTime > 1000l){
                     this.fileDownload.upDateSpeed();
+                    if(this.fileDownload.getSpeed() == 0 && oldSpeed > 0){
+                        requestAgain();
+                    }
+                    oldSpeed = this.fileDownload.getSpeed();
                     pastTime = System.currentTimeMillis();
                 }
-//                if(this.listParts.size() == 0) continue;
-//                if(this.listPartData.size() == 0) {
-//                    System.out.println("empty queue");
-//                    continue;
-//                }
-//                DataPack dataPack = this.listParts.poll();
                 DataPack dataPack = this.listPartData.poll();
                 if(dataPack == null){
 //                    System.out.println("data pack in download is null");
@@ -94,40 +115,22 @@ public class DownloadController extends Thread {
                 }
                 byte[] data = dataPack.getData();
                 int dtLength = dataPack.getLength();
-
                 if(data != null){
                     int indexPart = 0;
                     for(int i = 38; i <= data[37]; i++){
                         indexPart = indexPart*100 + data[i];
                     }
-//                    System.out.println("idex"+indexPart);
-//                    if(!this.listIndex.containsKey(0) && indexPart==0 || indexPart==21){
-//                        System.out.println("zero"+Arrays.toString(data));
-//                    }
-//                    long cSum = 0;
-//                    for(int i = data[37]+2; i <= data[data[37]+1]; i++){
-//                        cSum = cSum*100 + data[i];
-//                    }
-//                    System.out.println("==="+cSum);
+//                    System.out.println("index"+indexPart);
                     byte[] dt = new byte[dtLength-data[37]-1];
                     System.arraycopy(data,data[37]+1, dt, 0, dt.length);
-//                    Checksum checker = new Adler32();
-//                    ((Adler32) checker).update(dt);
-//                    if(checker.getValue() == cSum){
-//                        System.out.println("+++++++++++++++++++++++++");
-                        addPartToFile(indexPart, dt);
-//                    }
-
+                    this.oldSpeed = -1;
+                    addPartToFile(indexPart, dt);
                 }else
                     System.out.println("data null");
             }catch (Exception e){
                 System.out.println("fail packet"+e.getMessage());
+                break;
             }
-//            System.out.println("ssss");
-
-//            if(checker.getValue() == checksum){
-//                System.out.println("+++++++");
-//            }
         }
         if(isEndTask){
             FileShare fileShare = new FileShare();
@@ -148,16 +151,16 @@ public class DownloadController extends Thread {
         }
     }
 
-    public void addPartToFile(int index, byte[] data){
+    public void addPartToFile(long index, byte[] data){
         try {
-            if(this.listIndex.containsKey(index)){
+            if(this.listIndex.containsKey((int)index)){
 //                System.out.println("write " + index);
-                if(oldIndex != index - 1){
+                if(oldIndex != index - 1l){
                     randomAccessFile.seek(index * Constant.PART_SIZE);
                     oldIndex = index;
                 }
                 randomAccessFile.write(data);
-                this.listIndex.remove(index);
+                this.listIndex.remove((int)index);
                 this.fileDownload.addDownloadedSize(data.length);
                 if(this.listIndex.isEmpty()){
                     this.isEndTask = true;
@@ -181,16 +184,25 @@ public class DownloadController extends Thread {
 
     public void requestAgain(){
         ArrayList<Integer> arrayList = new ArrayList<>();
+        int count = 0;
         for(int index : this.listIndex.keySet()){
+            count++;
             arrayList.add(index);
-        }
-        if(arrayList.size() > 100){
-            ArrayList<Integer> array = new ArrayList<>();
-            for(int i = 0; i < 50; i++){
-                array.add(arrayList.get(i));
+            if(count == 50){
+                PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(),0, fileDownload.getMd5(), arrayList);
+                count = 0;
+                arrayList.clear();
             }
-            PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(), fileDownload.getMd5(), array);
-        }else
-            PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(), fileDownload.getMd5(), arrayList);
+//            System.out.println("accc");
+        }
+        PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(),0, fileDownload.getMd5(), arrayList);
+//        if(arrayList.size() > 50){
+//            while(true){
+//                int count = 0;
+//
+//            }
+//
+//        }else
+//            PackageController.getInstance().sendDownloadRequest(listCom.get(0).getIp(), listCom.get(0).getPort(),0, fileDownload.getMd5(), arrayList);
     }
 }

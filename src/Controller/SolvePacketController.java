@@ -159,6 +159,7 @@ public class SolvePacketController {
         computer.setPort(port);
         int typeRes = jsonObject.get("typeRes").getAsInt();
         String md5File = jsonObject.get("md5File").getAsString();
+        int idReq = jsonObject.get("idReq").getAsInt();
         FileShare fileShare = MyComputer.getInstance().getFileShareBy(md5File);
         ArrayList<Integer> listIndex = new ArrayList<>();
         switch (typeRes){
@@ -180,7 +181,7 @@ public class SolvePacketController {
                 break;
             }
         }
-        SeedingController seedingController = new SeedingController(computer, fileShare, listIndex);
+        SeedingController seedingController = new SeedingController(computer, fileShare, idReq, listIndex);
         seedingController.start();
         if(this.listSeeding.containsKey(md5File + ip + port)){
             this.listSeeding.get(md5File + ip + port).add(seedingController);

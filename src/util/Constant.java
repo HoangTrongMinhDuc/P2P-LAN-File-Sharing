@@ -21,7 +21,7 @@ public class Constant {
     public static final int DEFAULT_PORT = 7878;
     public static final int TIME_PENDING = 60000;
     public static final int TIME_OUT_ALIVE = 120000;
-    public static final int PART_SIZE = 3072;
+    public static final long PART_SIZE = 3072;
     public static final String ONLINE_ICON = "src/res/active.png";
     public static final String PENDING_ICON = "src/res/pending.png";
     public static final String OFFLINE_ICON = "src/res/offline.png";
